@@ -4,6 +4,16 @@ VR Chat Animator Toolkit
 Project Ongoing, some Major issues still in code,
 but basic functions and Layout were build.
 
+What is this Tool?:
+Its planned to be a Wide Toolbox of new Features that allow for Smoother Developement on Avatars,
+Fast Accessible UIs, Automatic Functions, Debugging
+Currently Focused on the Animator, but i generally look out for expansion on other types of functionalitys
+
+What is planned for Future:
+  Features will be added based on Evaluation and Ideas, theres no specific Goal
+
+
+
 Read Wiki for Function Descriptions
 
 The Addon is maybe Fragile, feel free to test it, but keep in mind that it could potentially kill the Controller you are working on
