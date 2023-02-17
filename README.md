@@ -1,16 +1,24 @@
 # PostUpsTools
 VR Chat Animator Toolkit
+I Started this Project around the 14.02~
+
 
 Project Ongoing, some Major issues still in code,
 but basic functions and Layout were build.
+
+
 
 What is this Tool?:
 Its planned to be a Wide Toolbox of new Features that allow for Smoother Developement on Avatars,
 Fast Accessible UIs, Automatic Functions, Debugging
 Currently Focused on the Animator, but i generally look out for expansion on other types of functionalitys
 
+
+
 What is planned for Future:
   Features will be added based on Evaluation and Ideas, theres no specific Goal
+
+
 
 
 
