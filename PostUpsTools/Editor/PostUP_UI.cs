@@ -264,9 +264,9 @@ public class PostUP_UI : EditorWindow
 
             }
 
-
+            copy_Tools.Menu(controller);
         }
-        copy_Tools.Menu(controller);
+        
 
 
         EditorGUILayout.EndScrollView();
