@@ -164,6 +164,30 @@ public class Copy_Tools
 
                                     {
                                         cachedTransitions[i].conditions[j].parameter = listparameters[index];
+
+                                        //Set mode depending on Type
+                                        if (controller.parameters[index].type == AnimatorControllerParameterType.Bool)
+                                        {
+                                            cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.If;
+                                            cachedTransitions[i].conditions[j].threshold = 22;
+                                        }
+                                        else if (controller.parameters[index].type == AnimatorControllerParameterType.Float)
+                                        {
+                                            cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.Greater;
+                                            cachedTransitions[i].conditions[j].threshold = 0.0f;
+                                        }
+                                        else if (controller.parameters[index].type == AnimatorControllerParameterType.Int)
+                                        {
+                                            cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.Equals;
+                                            cachedTransitions[i].conditions[j].threshold = 0;
+                                        }
+                                        else if (controller.parameters[index].type == AnimatorControllerParameterType.Trigger)
+                                        {
+                                            cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.If;
+                                            cachedTransitions[i].conditions[j].threshold = 0;
+                                        }
+
+
                                         cachedTransitions[i].conditions[j].parameterselection = false;
                                     }
 

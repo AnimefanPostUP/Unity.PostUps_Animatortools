@@ -19,7 +19,6 @@ using static Parameter_Functions;
 using static Layer_Functions;
 using static Transition_Functions;
 using static Controller_Functions;
-
 using static PostUP_UI;
 public class AbsoluteAnimations
 {
