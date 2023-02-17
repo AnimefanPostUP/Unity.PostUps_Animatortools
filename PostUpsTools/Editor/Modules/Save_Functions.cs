@@ -49,7 +49,7 @@ public class Save_Functions
 
             if (currentTransform == null)
             {
-                Debug.LogError("The 'to' GameObject is not a child of the 'from' GameObject.");
+                Debug.LogError("PostUpsTools:  The 'to' GameObject is not a child of the 'from' GameObject.");
                 return null;
             }
         }
@@ -64,11 +64,11 @@ public class Save_Functions
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            Debug.Log("Generating Done!");
+            Debug.Log("PostUpsTools:  Generating Done!");
         }
         else
         {
-            Debug.LogError("File  " + filepath + filename + fileaddition + " Already Exists");
+            Debug.LogError("PostUpsTools: File  " + filepath + filename + fileaddition + " Already Exists");
         }
     }
 }

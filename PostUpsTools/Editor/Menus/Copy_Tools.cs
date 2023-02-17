@@ -507,7 +507,7 @@ public class Copy_Tools
                         {
 
                             //Debug transition name
-                            Debug.Log("Transition " + i + " copied");
+                            //Debug.Log("Transition " + i + " copied");
 
                             cachedTransitions[i] = new ToolTransition(true);
 
@@ -518,7 +518,7 @@ public class Copy_Tools
                             {
 
                                 //Debug condition parameter, mode and threshold
-                                Debug.Log(transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
+                                //Debug.Log(transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
                                 cachedTransitions[i].conditions[j] = new ToolCondition(transitions[i].conditions[j].parameter, transitions[i].conditions[j].mode, transitions[i].conditions[j].threshold);
                             }
                         }
