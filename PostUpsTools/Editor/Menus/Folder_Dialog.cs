@@ -24,7 +24,7 @@ public class Folder_Dialog
     public Folder_Dialog()
     {
         path = "Assets/PostUpsTools/";
-        usepath = path + "Assets/";
+        usepath = path + "";
         foldername = "PostUpsTools";
         folderpath = usepath + foldername;
     }
@@ -47,7 +47,7 @@ public class Folder_Dialog
                 usepath = path + "/";
 
             }
-            else { usepath = "Assets/PostUpsTools/"; }
+            else { usepath = ""; }
 
 
         }

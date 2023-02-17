@@ -151,7 +151,7 @@ public class PostUP_UI : EditorWindow
         if (controllergameobject_buffer != controllergameobject)
         {
             controllergameobject = controllergameobject_buffer;
-            
+
             if (controllergameobject != null)
             {
                 animator = controllergameobject.GetComponent<Animator>();
@@ -192,17 +192,6 @@ public class PostUP_UI : EditorWindow
 
         //Folder Selection
         usepath = folder_dialog.FolderDialogGUI();
-
-
-        //Check if usepath is a valid path
-
-
-        //get absolute path
-
-
-        if (!AssetDatabase.IsValidFolder(usepath) && false)
-            usepath = null;
-
         EditorGUILayout.LabelField("Selected Folder:" + usepath, EditorStyles.boldLabel);
         GUILayout.Space(20);
 
