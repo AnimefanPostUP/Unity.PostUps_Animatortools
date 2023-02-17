@@ -481,6 +481,10 @@ public class Copy_Tools
 
                         for (int i = 0; i < transitions.Length; i++)
                         {
+
+                            //Debug transition name
+                            Debug.Log("Transition " + i + " copied");
+
                             cachedTransitions[i] = new ToolTransition(true);
 
                             //initiate ToolCondition array
@@ -488,6 +492,9 @@ public class Copy_Tools
 
                             for (int j = 0; j < transitions[i].conditions.Length; j++)
                             {
+
+                                //Debug condition parameter, mode and threshold
+                                Debug.Log(transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
                                 cachedTransitions[i].conditions[j] = new ToolCondition(transitions[i].conditions[j].parameter, transitions[i].conditions[j].mode, transitions[i].conditions[j].threshold);
                             }
                         }

@@ -28,24 +28,35 @@ public class Transition_Functions : MonoBehaviour
     {
         List<AnimatorStateTransition> transitions = new List<AnimatorStateTransition>();
 
-        AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
+        //get layer count
+        int layerCount = controller.layers.Length;
 
-        foreach (ChildAnimatorState childState in stateMachine.states)
+        //find the layer that contains the source state
+        for (int i = 0; i < layerCount; i++)
         {
-            if (childState.state == sourceState)
+            AnimatorStateMachine stateMachine = controller.layers[i].stateMachine;
+
+            foreach (ChildAnimatorState childState in stateMachine.states)
             {
-                foreach (AnimatorStateTransition transition in childState.state.transitions)
+                if (childState.state == sourceState)
                 {
-
-                    //Debug to see if the transition is the one we want
-
-                    if (transition.destinationState == destinationState)
+                    foreach (AnimatorStateTransition transition in childState.state.transitions)
                     {
-                        transitions.Add(transition);
+
+                        //Debug to see if the transition is the one we want
+
+                        if (transition.destinationState == destinationState)
+                        {
+                            transitions.Add(transition);
+                        }
                     }
                 }
             }
         }
+
+
+
+       
 
         return transitions.ToArray();
     }
