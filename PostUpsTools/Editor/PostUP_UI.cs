@@ -129,7 +129,7 @@ public class PostUP_UI : EditorWindow
         //UI Refresher ----------------------------------------------------------------------------------------------------------------------------
         EditorCoroutineUtility.StartCoroutine(UIRefresher(100), this);
 
-
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
         if (GUILayout.Button("Reset UI"))
         {
@@ -140,25 +140,27 @@ public class PostUP_UI : EditorWindow
         }
 
 
-        if (GUILayout.Button("Fast Rendering "+runFluidServices))
+        if (GUILayout.Button("Fast Rendering " + runFluidServices))
         {
             runFluidServices = !runFluidServices;
         }
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
-        if (controllergameobject_buffer != controllergameobject || target_buffer != target)
+
+        //Update controller if New Controller is selected
+        if (controllergameobject_buffer != controllergameobject)
         {
             controllergameobject = controllergameobject_buffer;
-            animator = controllergameobject.GetComponent<Animator>();
-            controller = animator.runtimeAnimatorController as AnimatorController;
-            if (controller == null) { Debug.LogError("No Controller"); }
-            target = target_buffer;
-            controllergameobject = controllergameobject_buffer;
-            scenepath = GetRelativePathFromTo(controllergameobject_buffer, target);
-            if (scenepath.EndsWith("/"))
+            
+            if (controllergameobject != null)
             {
-                scenepath = scenepath.Substring(0, scenepath.Length - 1);
+                animator = controllergameobject.GetComponent<Animator>();
+
+                if (animator != null)
+                {
+                    controller = animator.runtimeAnimatorController as AnimatorController;
+                    if (controller == null) { Debug.LogError("No Controller"); }
+                }
             }
         }
 
@@ -204,6 +206,7 @@ public class PostUP_UI : EditorWindow
         EditorGUILayout.LabelField("Selected Folder:" + usepath, EditorStyles.boldLabel);
         GUILayout.Space(20);
 
+        //Show options if path is valid
         if (usepath == null)
         {
             EditorGUILayout.LabelField("Select Save Folder for Animations Please!");
@@ -222,10 +225,21 @@ public class PostUP_UI : EditorWindow
             {
                 EditorGUILayout.LabelField("Select a Object for the Controller for Showing Options (A Controller will be created called Generator in PostUpsTools Folder)");
             }
+            else if (animator == null)
+            {
+                EditorGUILayout.LabelField("No Animator on the Controller!");
+
+            }
             else
             {
-                //Check if Target Exists and show Options
+                //Set Target Object
                 target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true);
+
+                //if Target is not the same as the last frame, set it to the new one
+                if (target_buffer != target)
+                    target = target_buffer;
+
+                //Show Options if Target exists
                 if (target == null)
                 {
                     EditorGUILayout.LabelField("Select a Target Object for Animation Options");
@@ -233,6 +247,13 @@ public class PostUP_UI : EditorWindow
                 }
                 else
                 {
+
+                    //write Path
+                    scenepath = GetRelativePathFromTo(controllergameobject_buffer, target);
+                    if (scenepath.EndsWith("/"))
+                    {
+                        scenepath = scenepath.Substring(0, scenepath.Length - 1);
+                    }
 
                     //Quickgen ------------------------------------------------------------------------------------------------------------------
 
@@ -316,12 +337,13 @@ public class PostUP_UI : EditorWindow
         {
             EditorCoroutineUtility.StartCoroutine(UIRefresherService(counter), this);
             Repaint();
-        } else { recursionRunning = false; runningServices--; }
+        }
+        else { recursionRunning = false; runningServices--; }
 
     }
 
 
-       public IEnumerator Reloadfinisher()
+    public IEnumerator Reloadfinisher()
     {
         yield return new WaitForSeconds(0.5f);
         runFluidServices = false;
