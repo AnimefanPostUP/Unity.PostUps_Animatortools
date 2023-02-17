@@ -1,4 +1,4 @@
-!!!Currently the Controllerobject has to have the Controller in the first PostUPsTools Path names "Generator"!
+
 
 # PostUpsTools
 VR Chat Animator Toolkit
