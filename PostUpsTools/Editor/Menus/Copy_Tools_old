@@ -1,0 +1,406 @@
+﻿using UnityEngine;
+using UnityEditor;
+using UnityEditor.Animations;
+using UnityEditor.EditorTools;
+using Unity.EditorCoroutines.Editor;
+
+using System;
+using System.IO;
+using System.Text;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+
+using static State_Functions;
+using static Clip_Generator;
+using static Parameter_Functions;
+using static Layer_Functions;
+using static Transition_Functions;
+using static AbsoluteAnimations;
+using static Controller_Functions;
+public class Copy_Tools
+{
+
+
+
+    public Copy_Tools()
+    {
+
+    }
+    bool copytool;
+
+    //array for transitions
+    AnimatorStateTransition[] transitions;
+    AnimatorStateTransition[] cachedTransitions;
+
+    int[][] selectedParameterIndexes;
+    int[][] selectedOperatorIndexes;
+    string[][] thresholdValues;
+
+    //Array of operators
+
+
+    public void Menu(AnimatorController controller)
+    {
+        if (GUILayout.Button("MENU Condition Copytool"))copytool = !copytool;
+
+        if (copytool)
+        {
+
+            //Experimental
+            if (cachedTransitions != null)
+            {
+
+                //Loop for transitions array
+                for (int i = 0; i < cachedTransitions.Length; i++)
+                {
+
+                    //get conditions from transition
+                    //AnimatorCondition[] conditions = cachedTransitions[i].conditions;
+
+                    string[] parameters = new string[controller.parameters.Length];
+                    for (int j = 0; j < controller.parameters.Length; j++)
+                    {
+                        parameters[j] = controller.parameters[j].name;
+                    }
+
+                    for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
+                    {
+
+                        EditorGUILayout.BeginHorizontal();
+
+                        //Parameter Values----------------------------------------------------
+                        int param = GetParameterIndex(controller, cachedTransitions[i].conditions[j].parameter.ToString());
+                        AnimatorControllerParameterType type = GetParameterType(controller, cachedTransitions[i].conditions[j].parameter);
+
+                        Debug.Log("Parameter2: " + cachedTransitions[i].conditions[j].parameter);
+
+                        //Save Parameter------------------------------------------------------
+                        int selectedparameter = EditorGUILayout.Popup(param, parameters);
+                        
+                        cachedTransitions[i].conditions[j].parameter = controller.parameters[selectedparameter].name;
+                        Debug.Log("Parameter2: " + cachedTransitions[i].conditions[j].parameter);
+
+                        //Save Operator------------------------------------------------------
+
+                        //Get the selected Type
+                        int selectedIndex = 0;
+                        switch (cachedTransitions[i].conditions[j].mode.ToString())
+                        {
+                            case "Equals":
+                                selectedIndex = 0;
+                                break;
+                            case "NotEqual":
+                                selectedIndex = 1;
+                                break;
+                            case "Greater":
+                                selectedIndex = 2;
+                                break;
+                            case "Less":
+                                selectedIndex = 3;
+                                break;
+
+                        }
+
+
+                        //debug parameter type
+                        EditorGUILayout.LabelField("type:  " + type.ToString());
+
+                        //Transitions Mode Popup Text
+                        string[] options = new string[4];
+
+                        //set Text for Popup
+                        if (type == AnimatorControllerParameterType.Float)
+                        {
+                            options = new string[2] { "Greater", "Less" };
+                            selectedIndex = selectedIndex - 2;
+                        }
+                        else if (type == AnimatorControllerParameterType.Bool) //Special Treatment for bool due to the fact that is uses 2 operators as threshold
+                        {
+                              
+                            
+                            int selectedIndex2 = (int)cachedTransitions[i].conditions[j].threshold;
+                            EditorGUILayout.Popup("Threshold", 0, new string[] { "==" });
+
+                            options = new string[2] { "True", "False" };
+                            selectedIndex = 0;
+                        }
+                        else
+                        if (type == AnimatorControllerParameterType.Trigger)
+                        {
+                            options = new string[1] { "==" };
+                            selectedIndex = 0;
+                        }
+                        else if (type == AnimatorControllerParameterType.Int)
+                        { 
+                            options = new string[4] { "Equals", "NotEqual", "Greater", "Less" };
+                        }
+                        else
+                        {
+                            options = new string[1] { "ERROR" };
+
+                        }
+
+                        //Popup
+                        selectedIndex = EditorGUILayout.Popup("Transition Mode", selectedIndex, options);
+
+
+                        //Add errorcorrecting here later
+
+
+                        if (type != AnimatorControllerParameterType.Bool)
+                        {
+                            //switchcase for operator
+                            switch (selectedIndex)
+                            {
+                                case 0:
+                                    cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.Equals;
+                                    break;
+                                case 1:
+                                    cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.NotEqual;
+                                    break;
+                                case 2:
+                                    cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.Greater;
+                                    break;
+                                case 3:
+                                    cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.Less;
+                                    break;
+
+                            }
+
+                            // make  AnimatorConditionMode.Equals if is float
+                        }
+
+
+                        //Threshold Values----------------------------------------------------
+
+                        if (type == AnimatorControllerParameterType.Trigger)
+                        {
+                            //true falls Popup
+                            int selectedIndex2 = (int)cachedTransitions[i].conditions[j].threshold;
+                            int statusIndex = EditorGUILayout.Popup("Threshold", selectedIndex2, new string[] { "True" });
+                            if (statusIndex == 0)
+                            {
+                                cachedTransitions[i].conditions[j].threshold = 1;
+                            }
+                            else
+                            {
+                                cachedTransitions[i].conditions[j].threshold = 0;
+                            }
+
+                        }
+
+                        //if type is float
+                        else if (type == AnimatorControllerParameterType.Float)
+                        {
+
+                            float newThreshold;
+                            if (float.TryParse(EditorGUILayout.TextField("Threshold", cachedTransitions[i].conditions[j].threshold.ToString()), out newThreshold))
+                            {
+                                cachedTransitions[i].conditions[j].threshold = newThreshold;
+                            }
+                        }
+                        else if (type == AnimatorControllerParameterType.Int) 
+                        {
+                            //handle integer
+                            int newThreshold2;
+                            if (int.TryParse(EditorGUILayout.TextField("Threshold", cachedTransitions[i].conditions[j].threshold.ToString()), out newThreshold2))
+                            {
+                                cachedTransitions[i].conditions[j].threshold = newThreshold2;
+                            }
+                        }
+
+
+                        EditorGUILayout.EndHorizontal();
+
+
+                        //save changes
+                        /*
+                        EditorUtility.SetDirty(controller);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+                        */
+
+                    }
+
+
+                }
+
+
+
+
+
+                /*
+                for (int i = 0; i < conditions.Length; i++)
+                {
+
+                    //Debug.Log("Condition " + i + ": " + conditions[i].parameter + " " + conditions[i].mode + " " + conditions[i].threshold);
+                    EditorGUILayout.BeginHorizontal();
+
+                    //get parameter name
+                    int param = GetParameterIndex(controller, conditions[i].parameter.ToString());
+
+
+
+                    string[] parameters = new string[controller.parameters.Length];
+                    for (int j = 0; j < controller.parameters.Length; j++)
+                    {
+                        parameters[j] = controller.parameters[j].name;
+                    }
+
+                    selectedParameterIndexes[i] = EditorGUILayout.Popup(selectedParameterIndexes[i], parameters);
+
+                    // Create a dropdown for the operator
+
+                    selectedOperatorIndexes[i] = EditorGUILayout.Popup(selectedOperatorIndexes[i], operators);
+
+                    // Create a textbox for the threshold
+                    thresholdValues[i] = EditorGUILayout.TextField("", thresholdValues[i]);
+
+                    EditorGUILayout.EndHorizontal();
+                }
+                */
+
+                //new loop for 
+
+
+            }
+            else
+            {
+                EditorGUILayout.LabelField("No Condition in Cache", EditorStyles.boldLabel);
+                if (!(Selection.activeObject is AnimatorStateTransition))
+                {
+
+                    EditorGUILayout.LabelField("Select a Transition for more Options", EditorStyles.boldLabel);
+                }
+            }
+
+
+            GUILayout.Space(30);
+            if (Selection.activeObject != null)
+                if (Selection.activeObject is AnimatorStateTransition)
+                {
+                    //Get all transitions with the same source and destination
+                    AnimatorStateTransition selectiontransition = Selection.activeObject as AnimatorStateTransition;
+                    transitions = GetTransitions(controller, GetSourceState(controller, selectiontransition), selectiontransition.destinationState);
+
+                    //get name of sourcestate
+                    string sourcename = GetSourceState(controller, selectiontransition).name;
+                    string destiname = selectiontransition.destinationState.name;
+
+                    //transitionlist to array
+
+                    if (cachedTransitions != null)
+                    {
+
+                        EditorGUILayout.LabelField("Copy Cache: ", EditorStyles.boldLabel);
+
+                        //list all transitions in transtition array with conditions
+                        for (int i = 0; i < transitions.Length; i++)
+                        {
+                            EditorGUILayout.LabelField("Transition " + i);
+                            for (int j = 0; j < transitions[i].conditions.Length; j++)
+                            {
+                                //read out array
+                                EditorGUILayout.LabelField("Condition " + j + ": " + transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
+                            }
+                        }
+
+                        if (transitions.Length <= 0) EditorGUILayout.LabelField("Transitions have beend read", EditorStyles.boldLabel);
+
+
+                    }
+                    else EditorGUILayout.LabelField("No Condition to Paste", EditorStyles.boldLabel);
+
+
+                    if (GUILayout.Button("Copy Transitions"))
+                    {
+                        //copy transitions to cache by for loop
+                        cachedTransitions = transitions;
+                    }
+
+
+                    //show conditions of transition array 
+                    EditorGUILayout.LabelField("Current Transitions of Selection:", EditorStyles.boldLabel);
+                    for (int i = 0; i < transitions.Length; i++)
+                    {
+                        EditorGUILayout.LabelField("Transition " + i);
+                        for (int j = 0; j < transitions[i].conditions.Length; j++)
+                        {
+                            //read out array
+                            EditorGUILayout.LabelField("Condition " + j + ": " + transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
+                        }
+                    }
+
+
+
+
+                    EditorGUILayout.LabelField("Current Transition: ", EditorStyles.boldLabel);
+
+
+
+
+
+                    if (Selection.activeObject is AnimatorStateTransition)
+                    {
+                        if (GUILayout.Button("Add Transitions"))
+                        {
+
+                            //Save parentstate
+                            AnimatorState parentstate = GetParentState(controller, selectiontransition);
+
+                            //Save sourcestate
+                            AnimatorState sourcestate = GetSourceState(controller, selectiontransition);
+
+
+
+ 
+
+                        }
+
+                        if (GUILayout.Button("Overwrite Transitions"))
+                        {
+
+
+                        }
+
+
+                    }
+
+
+
+
+
+                }
+
+        }
+        else
+        {
+
+            //reset cache
+            cachedTransitions = null;
+
+            //reset transition array
+            transitions = null;
+
+            //reset selected parameter index
+            selectedParameterIndexes = null;
+
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
