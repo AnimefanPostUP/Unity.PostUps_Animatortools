@@ -56,7 +56,7 @@ public class Transition_Functions : MonoBehaviour
 
 
 
-       
+
 
         return transitions.ToArray();
     }
@@ -97,21 +97,27 @@ public class Transition_Functions : MonoBehaviour
         return newTransition;
     }
 
-    public static AnimatorStateTransition CreateTransition(AnimatorState sourceState, AnimatorState destinationState, string parameter, float threshold, AnimatorConditionMode conditionType, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+    public static AnimatorStateTransition AddDuplicateOn(AnimatorStateTransition originalTransition, AnimatorState source, AnimatorState destination, AnimatorController controller)
     {
-        AnimatorStateTransition transition = new AnimatorStateTransition();
 
-        transition.destinationState = destinationState;
-        transition.isExit = isExit;
-        transition.hasExitTime = hasExitTime;
-        transition.duration = duration;
-        transition.offset = offset;
-        transition.AddCondition(conditionType, threshold, parameter);
-        transition.exitTime = exitTime;
-        sourceState.AddTransition(transition);
+        AnimatorStateTransition newTransition = source.AddTransition(destination);
 
-        return transition;
+        newTransition.duration = originalTransition.duration;
+        newTransition.offset = originalTransition.offset;
+        newTransition.exitTime = originalTransition.exitTime;
+        newTransition.hasExitTime = originalTransition.hasExitTime;
+        newTransition.interruptionSource = originalTransition.interruptionSource;
+        newTransition.orderedInterruption = originalTransition.orderedInterruption;
+        newTransition.mute = originalTransition.mute;
+        newTransition.solo = originalTransition.solo;
+        newTransition.canTransitionToSelf = originalTransition.canTransitionToSelf;
+ 
+        
+
+        return newTransition;
     }
+
+
 
     public static AnimatorStateTransition AddDuplicateReversed(AnimatorStateTransition originalTransition, AnimatorController controller)
     {
@@ -133,6 +139,22 @@ public class Transition_Functions : MonoBehaviour
         return newTransition;
     }
 
+    public static AnimatorStateTransition CreateTransition(AnimatorState sourceState, AnimatorState destinationState, string parameter, float threshold, AnimatorConditionMode conditionType, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+    {
+        AnimatorStateTransition transition = new AnimatorStateTransition();
+
+        transition.destinationState = destinationState;
+        transition.isExit = isExit;
+        transition.hasExitTime = hasExitTime;
+        transition.duration = duration;
+        transition.offset = offset;
+        transition.AddCondition(conditionType, threshold, parameter);
+        transition.exitTime = exitTime;
+        sourceState.AddTransition(transition);
+
+        return transition;
+    }
+
 
     public static void AddCondition(AnimatorStateTransition transition, string parameter, float threshold, AnimatorConditionMode conditionType)
     {
@@ -151,10 +173,49 @@ public class Transition_Functions : MonoBehaviour
 
     }
 
-    public static void ChangeTransitionDestination(AnimatorStateTransition transition, AnimatorState newState, AnimatorController controller)
+    public static void ChangeTransitionDestination(AnimatorStateTransition transition, AnimatorState destination, AnimatorController controller)
     {
         // Change the destination state of the transition to the new state
-        transition.destinationState = newState;
+        transition.destinationState = destination;
+    }
+
+    public static AnimatorStateTransition ChangeTransitionSource(AnimatorStateTransition transition, AnimatorState newsource, AnimatorController controller)
+    {
+        //debug source name
+        Debug.Log("Source name: " + newsource.name);
+
+        //cache transition
+
+
+        AnimatorState parent = GetParentState(controller, transition);
+
+        //copy transition without reference
+
+        AnimatorStateTransition newtransition=AddDuplicateOn(transition, newsource , transition.destinationState , controller);
+        parent.RemoveTransition(transition);
+
+        return newtransition;
+
+    }
+
+    //Remove Transition from a state
+    public static void RemoveTransitionfromState(AnimatorStateTransition transition, AnimatorController controller, AnimatorState sourceState)
+    {
+
+        //deleting transition only from state   
+        AnimatorStateTransition[] transitions = sourceState.transitions;
+        List<AnimatorStateTransition> newTransitions = new List<AnimatorStateTransition>();
+        foreach (AnimatorStateTransition t in transitions)
+        {
+            if (t != transition)
+            {
+                newTransitions.Add(t);
+            }
+        }
+        sourceState.transitions = newTransitions.ToArray();
+
+
+
     }
 
 }

@@ -24,7 +24,8 @@ public class Animator_Utils
 {
 
     bool animatorutility;
-    bool bindertrigger;
+    bool binddestination;
+    bool bindsource;
     AnimatorStateTransition lastes;
     AnimatorState tempState;
 
@@ -37,8 +38,8 @@ public class Animator_Utils
         if (GUILayout.Button("MENU Animator "))
         {
             animatorutility = !animatorutility;
-            bindertrigger = false;
-
+            binddestination = false;
+            bindsource = false;
         }
 
         if (animatorutility)
@@ -55,29 +56,31 @@ public class Animator_Utils
             }
 
 
-            
-            if (Selection.activeObject is AnimatorState)
-            {
-                if (GUILayout.Button("Batchconnect States"))
-                {
-                    AnimatorState selectionstate = Selection.activeObject as AnimatorState;
-                    if (selectionstate != null)
-                    {
-                        foreach (AnimatorState state in Selection.objects)
+            /*
+                        if (Selection.activeObject is AnimatorState)
                         {
-                            if (state != selectionstate)
+                            if (GUILayout.Button("Batchconnect States"))
                             {
-                                //CreateTransition(lastesstate, state_off, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
-                                Debug.Log("" + state.name);
+                                AnimatorState selectionstate = Selection.activeObject as AnimatorState;
+                                if (selectionstate != null)
+                                {
+                                    foreach (AnimatorState state in Selection.objects)
+                                    {
+                                        if (state != selectionstate)
+                                        {
+                                            //CreateTransition(lastesstate, state_off, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
+                                            Debug.Log("" + state.name);
+                                        }
+                                    }
+                                }
+
+
                             }
+                            //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
                         }
-                    }
+                        else { EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel); }
 
-
-                }
-                //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
-            }
-            else { EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel); }
+            */
 
             GUILayout.Space(30);
             if (Selection.activeObject is AnimatorStateTransition)
@@ -93,38 +96,60 @@ public class Animator_Utils
                         AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
                     }
 
-                    if (!bindertrigger)
-                        if (GUILayout.Button("Rebind"))
+                    if (!binddestination && !bindsource)
+                        if (GUILayout.Button("Bind Destination"))
                         {
                             lastes = selectiontransition;
-                            bindertrigger = true;
+                            binddestination = true;
+                        }
+
+
+                    if (!bindsource && !binddestination)
+                        if (GUILayout.Button("Bind Source"))
+                        {
+                            lastes = selectiontransition;
+                            bindsource = true;
                         }
                 }
             }
-            else if (!bindertrigger) EditorGUILayout.LabelField("No Transistion Selected", EditorStyles.boldLabel);
+            else if (!binddestination && !bindsource) EditorGUILayout.LabelField("No Transistion Selected", EditorStyles.boldLabel);
 
 
-            if (bindertrigger)
+            if (binddestination || bindsource)
             {
                 EditorGUILayout.LabelField("Select Animator State to Rebind", EditorStyles.boldLabel);
                 if (GUILayout.Button("Cancel Rebind"))
                 {
-
+                    binddestination = false;
+                    bindsource = false;
                 }
             }
 
             if (Selection.activeObject != null)
-                if (Selection.activeObject.GetType() == typeof(AnimatorState) && bindertrigger)
+                if (Selection.activeObject.GetType() == typeof(AnimatorState))
                 {
-                    Debug.LogWarning("Rebinding...");
-                    ChangeTransitionDestination(lastes, Selection.activeObject as AnimatorState, controller);
-                    bindertrigger = false;
+                    if (binddestination)
+                    {
+                        Debug.LogWarning("Rebinding Destination...");
+                        ChangeTransitionDestination(lastes, Selection.activeObject as AnimatorState, controller);
+                        binddestination = false;
+                        bindsource = false;
+                        //Update Window
+                        tempState = AddTemptstate(controller, lastes);
+                        EditorCoroutineUtility.StartCoroutine(DelayedFunction(controller, tempState), this);
+                    }
+                    else if (bindsource)
+                    {
+                        Debug.LogWarning("Rebinding Source...");
+                        AnimatorStateTransition newtransition = ChangeTransitionSource(lastes, Selection.activeObject as AnimatorState, controller);
+                        binddestination = false;
+                        bindsource = false;
+                        tempState = AddTemptstate(controller, newtransition);
+                        EditorCoroutineUtility.StartCoroutine(DelayedFunction(controller, tempState), this);
 
-                    //Update Window
-                    tempState = AddTemptstate(controller, lastes);
-                    EditorCoroutineUtility.StartCoroutine(DelayedFunction(controller, tempState), this);
+                    }
+                    GUILayout.Space(30);
                 }
-            GUILayout.Space(30);
         }
     }
 
