@@ -1,37 +1,31 @@
-﻿using UnityEngine;
-using UnityEditor;
-using UnityEditor.Animations;
+﻿
 
-[CustomEditor(typeof(AnimatorState))]
+using UnityEngine;
+using System.Collections;
+using UnityEditor;
+
+// Creates a custom Label on the inspector for all the scripts named ScriptName
+// Make sure you have a ScriptName script in your
+// project, else this will not work.
+[CustomEditor(typeof(AnimatorStateExtension))]
 public class AnimatorStateExtension : Editor
 {
-    public override void OnInspectorGUI()
+    /*
+    public override VisualElement CreateInspectorGUI()
     {
-        EditorGUI.BeginChangeCheck();
-        if (GUILayout.Button("Click me!"))
-        {
-            Debug.Log("Button clicked!");
-        }
-
-        if (EditorGUI.EndChangeCheck())
-        {
-            if (GUILayout.Button("Click me!"))
-            {
-                Debug.Log("Button clicked!");
-            }
-        }
-
-
-        //DrawDefaultInspector();
+        return new Label("This is a Label in a Custom Editor");
     }
+    */
 }
 
 
 
 
-
-
 /*
+
+//code for testing for custom editor
+
+
 [CustomEditor(typeof(AnimatorStateTransition))]
 public class AnimatorStateExtension2 : Editor
 {

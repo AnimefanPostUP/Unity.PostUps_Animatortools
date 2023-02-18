@@ -221,6 +221,9 @@ public class PostUP_UI : EditorWindow
             }
             else
             {
+
+
+
                 //Set Target Object
                 target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true);
 
@@ -266,7 +269,7 @@ public class PostUP_UI : EditorWindow
 
             copy_Tools.Menu(controller);
         }
-        
+
 
 
         EditorGUILayout.EndScrollView();
