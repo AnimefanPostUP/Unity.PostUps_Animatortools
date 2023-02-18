@@ -91,10 +91,13 @@ public class Animator_Utils
 
                     EditorGUILayout.LabelField("Condition Tools:         " + selectiontransition.conditions, EditorStyles.boldLabel);
 
-                    if (GUILayout.Button("Add Condition (Ignore)"))
-                    {
-                        AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
-                    }
+                    /*
+                        if (GUILayout.Button("Add Condition (Ignore)"))
+                        {
+                            AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
+                        }
+                    */
+
 
                     if (!binddestination && !bindsource)
                         if (GUILayout.Button("Bind Destination"))
@@ -109,6 +112,14 @@ public class Animator_Utils
                         {
                             lastes = selectiontransition;
                             bindsource = true;
+                        }
+
+                    if (!bindsource && !binddestination)
+                        if (GUILayout.Button("Swap Source and Destination"))
+                        {
+                            AnimatorStateTransition newtransition = SwapDestinationSource(selectiontransition, controller);
+                            tempState = AddTemptstate(controller, newtransition);
+                            EditorCoroutineUtility.StartCoroutine(DelayedFunction(controller, tempState), this);
                         }
                 }
             }

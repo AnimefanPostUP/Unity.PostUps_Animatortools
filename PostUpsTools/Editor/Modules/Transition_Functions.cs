@@ -181,17 +181,19 @@ public class Transition_Functions : MonoBehaviour
 
     public static AnimatorStateTransition ChangeTransitionSource(AnimatorStateTransition transition, AnimatorState newsource, AnimatorController controller)
     {
-        //debug source name
-        Debug.Log("Source name: " + newsource.name);
-
-        //cache transition
-
-
         AnimatorState parent = GetParentState(controller, transition);
-
-        //copy transition without reference
-
         AnimatorStateTransition newtransition=AddDuplicateOn(transition, newsource , transition.destinationState , controller);
+        parent.RemoveTransition(transition);
+
+        return newtransition;
+
+    }
+
+    
+    public static AnimatorStateTransition SwapDestinationSource(AnimatorStateTransition transition, AnimatorController controller)
+    {
+        AnimatorState parent = GetParentState(controller, transition);
+        AnimatorStateTransition newtransition=AddDuplicateOn(transition , transition.destinationState , parent, controller);
         parent.RemoveTransition(transition);
 
         return newtransition;
