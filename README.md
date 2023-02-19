@@ -31,4 +31,8 @@ The Addon is maybe Fragile, feel free to test it, but keep in mind that it could
 
 Planned UI Draft (Left) + Current State (Right):
 
+
+
+
+
 ![image (1)](https://user-images.githubusercontent.com/93488236/219712399-c7f26b39-8079-43fc-b58b-effd4a22cdd2.png)
