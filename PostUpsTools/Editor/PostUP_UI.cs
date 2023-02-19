@@ -342,7 +342,7 @@ public class PostUP_UI : EditorWindow
     public IEnumerator Reloadfinisher()
     {
         yield return new WaitForSeconds(0.5f);
-        runFluidServices = false;
+        runFluidServices = true;
     }
 
 
