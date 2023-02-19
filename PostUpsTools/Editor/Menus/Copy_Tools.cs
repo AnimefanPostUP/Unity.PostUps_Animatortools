@@ -118,10 +118,41 @@ public class Copy_Tools
 
 
 
-                    EditorGUILayout.LabelField("Transition: " + i, EditorStyles.boldLabel, GUILayout.Width(3f * Screen.width / 8f));
+                    EditorGUILayout.LabelField("Transition" + i, EditorStyles.boldLabel, GUILayout.Width(1f * Screen.width / 8f));
+
+                    /*
+                            duration = 0.0f;
+                            offset = 0.0f;
+                            isExit = false;
+                            hasExitTime = true;
+                            exitTime = 0.01f;*
+                    */
+                    cachedTransitions[i].expandmenu = EditorGUILayout.Foldout(cachedTransitions[i].expandmenu, " settings ");
 
                     EditorGUILayout.EndHorizontal();
 
+                    //foldout 
+                    
+
+                    if (cachedTransitions[i].expandmenu)
+                    {
+                        GUILayout.Space(8f);
+                        EditorGUILayout.BeginHorizontal();
+
+                        cachedTransitions[i].duration = EditorGUILayout.FloatField("Duration", cachedTransitions[i].duration, GUILayout.Width(3f * Screen.width / 8f));
+                        GUILayout.Space(1f * Screen.width / 8f);
+                        cachedTransitions[i].offset = EditorGUILayout.FloatField("Offset", cachedTransitions[i].offset, GUILayout.Width(3f * Screen.width / 8f));
+
+                        EditorGUILayout.EndHorizontal();
+
+                        EditorGUILayout.BeginHorizontal();
+
+                        cachedTransitions[i].hasExitTime = EditorGUILayout.Toggle("HasExitTime", cachedTransitions[i].hasExitTime, GUILayout.Width(3f * Screen.width / 8f));
+                        GUILayout.Space(1f * Screen.width / 8f);
+                        cachedTransitions[i].exitTime = EditorGUILayout.FloatField("ExitTime", cachedTransitions[i].exitTime, GUILayout.Width(3f * Screen.width / 8f));
+
+                        EditorGUILayout.EndHorizontal();
+                    }
                     GUILayout.BeginVertical();
 
                     //read all Parameters
@@ -533,6 +564,8 @@ public class Copy_Tools
 
 
             GUILayout.Space(30);
+
+
             if (Selection.activeObject != null)
                 if (Selection.activeObject is AnimatorStateTransition)
                 {
@@ -543,9 +576,6 @@ public class Copy_Tools
                     AnimatorStateTransition selectiontransition = Selection.activeObject as AnimatorStateTransition;
                     transitions = GetTransitions(controller, GetSourceState(controller, selectiontransition), selectiontransition.destinationState);
 
-                    //get name of sourcestate
-                    string sourcename = GetSourceState(controller, selectiontransition).name;
-                    string destiname = selectiontransition.destinationState.name;
 
                     //transitionlist to array
 
@@ -570,6 +600,24 @@ public class Copy_Tools
                             //Debug.Log("Transition " + i + " copied");
 
                             cachedTransitions[i] = new ToolTransition(true);
+
+                            //copy transitions properties to cache
+                            //cachedTransitions[i].isExit = transitions[i].isExit;
+                            cachedTransitions[i].hasExitTime = transitions[i].hasExitTime;
+                            //cachedTransitions[i].hasFixedDuration = transitions[i].hasFixedDuration;
+                            cachedTransitions[i].exitTime = transitions[i].exitTime;
+                            cachedTransitions[i].duration = transitions[i].duration;
+                            cachedTransitions[i].offset = transitions[i].offset;
+                            //cachedTransitions[i].mute = transitions[i].mute;
+                            //cachedTransitions[i].solo = transitions[i].solo;
+                            //cachedTransitions[i].canTransitionToSelf = transitions[i].canTransitionToSelf;
+                            //cachedTransitions[i].interruptionSource = transitions[i].interruptionSource;
+                            //cachedTransitions[i].orderedInterruption = transitions[i].orderedInterruption;
+                            //cachedTransitions[i].additive = transitions[i].additive;
+                            //cachedTransitions[i].removeStartOffset = transitions[i].removeStartOffset;
+                            //cachedTransitions[i].mirror = transitions[i].mirror;
+                            //cachedTransitions[i].keepAnimatorControllerStateOnDisable = transitions[i].keepAnimatorControllerStateOnDisable;
+
 
                             //initiate ToolCondition array
                             cachedTransitions[i].conditions = new ToolCondition[transitions[i].conditions.Length];
@@ -677,9 +725,15 @@ public class Copy_Tools
                                     if (cachedTransitions[i].copy)
                                     {
 
-
                                         //create new transition object
-                                        AnimatorStateTransition newtransition = source.AddTransition(desti);
+                                        AnimatorStateTransition newtransition = CreateEmptyTransition(
+                                        source,
+                                        desti,
+                                        cachedTransitions[i].duration,
+                                        cachedTransitions[i].offset,
+                                        cachedTransitions[i].isExit,
+                                        cachedTransitions[i].hasExitTime,
+                                        cachedTransitions[i].exitTime);
 
                                         //iterate through all cachedconditions
                                         for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
@@ -714,9 +768,17 @@ public class Copy_Tools
                                 if (i == pasteIndex)
                                 {
 
-
                                     //create new transition object
-                                    AnimatorStateTransition newtransition = source.AddTransition(desti);
+                                    AnimatorStateTransition newtransition = CreateEmptyTransition(
+                                    source,
+                                     desti,
+                                     cachedTransitions[i].duration,
+                                     cachedTransitions[i].offset,
+                                     cachedTransitions[i].isExit,
+                                     cachedTransitions[i].hasExitTime,
+                                     cachedTransitions[i].exitTime);
+
+
 
                                     //iterate through all cachedconditions
                                     for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
@@ -793,8 +855,9 @@ public class Copy_Tools
                         lastesstate = null;
                     }
 
-                    if(lastesstate == null || selectionstate == null){ batchconnectfan=false; batchconnectstrip=false;} else
-                    if (batchconnectfan && lastesstate != selectionstate && selectionstate != lastesfanstate )
+                    if (lastesstate == null || selectionstate == null) { batchconnectfan = false; batchconnectstrip = false; }
+                    else
+                    if (batchconnectfan && lastesstate != selectionstate && selectionstate != lastesfanstate)
                     {
                         //find first Parameter
                         //iterate through all cachedtransitions
@@ -802,7 +865,14 @@ public class Copy_Tools
                         {
                             if (cachedTransitions[i].copy)
                             {
-                                AnimatorStateTransition newtransition = CreateEmptyTransition(lastesstate, selectionstate, 0f, 0f, true, false, 0.01f);
+                                AnimatorStateTransition newtransition = CreateEmptyTransition(
+                                    lastesstate,
+                                     selectionstate,
+                                     cachedTransitions[i].duration,
+                                     cachedTransitions[i].offset,
+                                     cachedTransitions[i].isExit,
+                                     cachedTransitions[i].hasExitTime,
+                                     cachedTransitions[i].exitTime);
                                 //iterate through all cachedconditions
                                 for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                                 {
@@ -819,7 +889,7 @@ public class Copy_Tools
                                             //get mode of current condition
                                             AnimatorConditionMode mode = cachedTransitions[i].conditions[j].mode;
 
-                                            if(cachedTransitions[i].conditions[j].flip)
+                                            if (cachedTransitions[i].conditions[j].flip)
                                             {
                                                 if (mode == AnimatorConditionMode.If)
                                                     mode = AnimatorConditionMode.IfNot;
@@ -860,7 +930,15 @@ public class Copy_Tools
                         {
                             if (cachedTransitions[i].copy)
                             {
-                                AnimatorStateTransition newtransition = CreateEmptyTransition(lastesstate, selectionstate, 0f, 0f, true, false, 0.01f);
+                                //(AnimatorState sourceState, AnimatorState destinationState, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+                                AnimatorStateTransition newtransition = CreateEmptyTransition(
+                                    lastesstate,
+                                     selectionstate,
+                                     cachedTransitions[i].duration,
+                                     cachedTransitions[i].offset,
+                                     cachedTransitions[i].isExit,
+                                     cachedTransitions[i].hasExitTime,
+                                     cachedTransitions[i].exitTime);
                                 //iterate through all cachedconditions
                                 for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                                 {
@@ -871,13 +949,13 @@ public class Copy_Tools
                                     AnimatorControllerParameterType paramtype = GetParameterType(controller, cachedTransitions[i].conditions[j].parameter);
 
                                     //switch parameter type
-                                   switch (paramtype)
+                                    switch (paramtype)
                                     {
                                         case AnimatorControllerParameterType.Bool:
                                             //get mode of current condition
                                             AnimatorConditionMode mode = cachedTransitions[i].conditions[j].mode;
 
-                                            if(cachedTransitions[i].conditions[j].flip)
+                                            if (cachedTransitions[i].conditions[j].flip)
                                             {
                                                 if (mode == AnimatorConditionMode.If)
                                                     mode = AnimatorConditionMode.IfNot;
@@ -980,13 +1058,35 @@ public class Copy_Tools
 //Create Transistion class for easier handling
 public class ToolTransition
 {
+    //(AnimatorState sourceState, AnimatorState destinationState, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+
     public ToolCondition[] conditions;
 
     public bool copy;
 
+    public float duration;
+
+    public float offset;
+
+    public bool isExit;
+
+    public bool hasExitTime;
+
+    public float exitTime;
+
+    public bool expandmenu;
+
     public ToolTransition(bool copy)
     {
         this.copy = copy;
+
+        duration = 0.0f;
+        offset = 0.0f;
+        isExit = false;
+        hasExitTime = true;
+        exitTime = 0.01f;
+        expandmenu = false;
+
     }
 }
 
