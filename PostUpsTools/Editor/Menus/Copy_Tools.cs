@@ -72,8 +72,6 @@ public class Copy_Tools
                 for (int i = 0; i < cachedTransitions.Length; i++)
                 {
 
-                    //get conditions from transition
-                    //AnimatorCondition[] conditions = cachedTransitions[i].conditions;
                     EditorGUILayout.BeginHorizontal();
 
                     //Button to delete transition
@@ -93,7 +91,7 @@ public class Copy_Tools
                     }
 
                     if (GUILayout.Button("Paste", GUILayout.Width(1f * Screen.width / 8f)))
-                    {
+                    {   //Paste transition to array: will be pasted in the end of the code
 
                         pasteIndex = i;
                         pasteTrigger = true;
@@ -102,51 +100,55 @@ public class Copy_Tools
 
                     if (GUILayout.Button("  X  ", GUILayout.Width(55)))
                     {
-                        //Remove transition from array
+                        //Remove transition from array: will be pasted in the end of the code
                         deletetranstiontrigger = true;
-
                     }
                     EditorGUILayout.LabelField("Transition: " + i, EditorStyles.boldLabel, GUILayout.Width(3f * Screen.width / 8f));
 
 
                     EditorGUILayout.EndHorizontal();
 
-
+                    //read all Parameters
                     string[] parameters = new string[controller.parameters.Length];
                     for (int j = 0; j < controller.parameters.Length; j++)
                     {
                         parameters[j] = controller.parameters[j].name;
                     }
 
+                    //Loop for conditions
                     for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                     {
 
 
-                        //Parameter Values----------------------------------------------------
+                        //get Parameter Index and Type----------------------------------------------------
                         int param = GetParameterIndex(controller, cachedTransitions[i].conditions[j].parameter.ToString());
                         AnimatorControllerParameterType type = GetParameterType(controller, cachedTransitions[i].conditions[j].parameter);
 
                         //Save Parameter------------------------------------------------------
 
+                        //Exit selection mode
                         if (cachedTransitions[i].conditions[j].parameterselection)
+                        {
                             if (GUILayout.Button("" + parameters[param] + " > exit selection mode"))
                             {
                                 cachedTransitions[i].conditions[j].parameterselection = !cachedTransitions[i].conditions[j].parameterselection;
                             }
-
+                        }
 
                         if (cachedTransitions[i].conditions[j].parameterselection)
                         {
-                            //space
                             GUILayout.Space(18);
+
                             //get controller parameters names
                             string[] listparameters = new string[controller.parameters.Length];
 
+                            //get controller parameters names
                             for (int m = 0; m < controller.parameters.Length; m++)
                             {
                                 listparameters[m] = controller.parameters[m].name;
                             }
 
+                            //calculate rows and columns
                             int rows = Mathf.CeilToInt(listparameters.Length / (float)columns);
 
                             for (int k = 0; k < rows; k++)
@@ -160,6 +162,7 @@ public class Copy_Tools
                                         break;
                                     }
 
+                                    //Buttons to select parameter
                                     if (GUILayout.Button(listparameters[index], GUILayout.Width(Screen.width / columns)))
 
                                     {
@@ -200,6 +203,7 @@ public class Copy_Tools
 
                         EditorGUILayout.BeginHorizontal();
 
+                        //Menu is parameterselection is false
                         if (!cachedTransitions[i].conditions[j].parameterselection)
                             if (GUILayout.Button(parameters[param], GUILayout.Width(3 * Screen.width / 10f)))
                             {
@@ -229,13 +233,13 @@ public class Copy_Tools
                         }
 
 
-                        //debug parameter type
+                        //Parameter Type
                         EditorGUILayout.LabelField(">" + type.ToString(), GUILayout.Width(1 * Screen.width / 10f));
 
                         //Transitions Mode Popup Text
                         string[] options = new string[4];
 
-                        //set Text for Popup
+                        //set Text for Popup based on Type
                         if (type == AnimatorControllerParameterType.Float)
                         {
                             options = new string[2] { "Greater", "Less" };
@@ -244,14 +248,7 @@ public class Copy_Tools
                         else if (type == AnimatorControllerParameterType.Bool) //Special Treatment for bool due to the fact that is uses 2 operators as threshold
                         {
 
-                            if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If)
-                            {
-                                selectedIndex = 0;
-                            }
-                            else
-                            {
-                                selectedIndex = 1;
-                            }
+                            if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If) { selectedIndex = 0; } else { selectedIndex = 1; }
 
                             EditorGUILayout.Popup("", 0, new string[] { "==" }, GUILayout.Width(2 * Screen.width / 10f));
 
@@ -259,18 +256,19 @@ public class Copy_Tools
 
                         }
                         else
-                        if (type == AnimatorControllerParameterType.Trigger)
+                        if (type == AnimatorControllerParameterType.Trigger) //Trigger uses only one operator
                         {
                             options = new string[1] { "==" };
                             selectedIndex = 0;
                         }
-                        else if (type == AnimatorControllerParameterType.Int)
+                        else if (type == AnimatorControllerParameterType.Int) //Int uses 4 operators
                         {
                             options = new string[4] { "Equals", "NotEqual", "Greater", "Less" };
                         }
-                        else
+                        else //Error
                         {
                             options = new string[1] { "ERROR" };
+                            selectedIndex = 0;
 
                         }
 
@@ -278,9 +276,10 @@ public class Copy_Tools
                         selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 10f));
 
 
-                        //Add errorcorrecting here later
+                        //Convert Popup Index
                         if (type == AnimatorControllerParameterType.Float) selectedIndex = selectedIndex + 2;
 
+                        // If not Bool or Trigger, set threshold
                         if (type != AnimatorControllerParameterType.Bool && type != AnimatorControllerParameterType.Trigger)
                         {
                             //switchcase for operator
@@ -298,11 +297,10 @@ public class Copy_Tools
                                 case 3:
                                     cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.Less;
                                     break;
-
                             }
-                            // make  AnimatorConditionMode.Equals if is float
                         }
 
+                        //set bool
                         if (type == AnimatorControllerParameterType.Bool)
                         {
                             switch (selectedIndex)
@@ -317,11 +315,6 @@ public class Copy_Tools
                         }
                         //Threshold Values----------------------------------------------------
 
-                        if (type == AnimatorControllerParameterType.Trigger)
-                        {
-
-
-                        }
 
                         //if type is float
                         else if (type == AnimatorControllerParameterType.Float)

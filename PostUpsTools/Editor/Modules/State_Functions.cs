@@ -175,6 +175,29 @@ public static  AnimatorState AddTemptstate(AnimatorController controller, Animat
         return state;
     }
 
+    public static  AnimatorState AddTemptstateByState(AnimatorController controller, AnimatorState sourcestate)
+    {
+
+        int activelayer = 0;
+
+        //Find the Layer of the Animator State Transition without using parentStateMaschine
+        for (int i = 0; i < controller.layers.Length; i++)
+        {
+            for (int j = 0; j < controller.layers[i].stateMachine.states.Length; j++)
+            {
+                if (controller.layers[i].stateMachine.states[j].state == sourcestate)
+                {
+                    activelayer = i;
+                }
+            }
+        }
+
+        //adding the state to the current active layer
+        AnimatorState state = controller.layers[activelayer].stateMachine.AddState("Delete if not removed after 10s");
+        return state;
+    }
+
+
     public static void RemoveTempstate(AnimatorController controller, AnimatorState tempState)
     {
 

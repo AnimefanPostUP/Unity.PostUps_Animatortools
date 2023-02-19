@@ -26,7 +26,12 @@ public class Animator_Utils
     bool animatorutility;
     bool binddestination;
     bool bindsource;
+
+    bool batchconnectfan;
+    bool batchconnectstrip;
     AnimatorStateTransition lastes;
+    AnimatorState lastesstate;
+    AnimatorState lastesfanstate;
     AnimatorState tempState;
 
 
@@ -56,31 +61,86 @@ public class Animator_Utils
             }
 
 
-            /*
-                        if (Selection.activeObject is AnimatorState)
+
+            if (Selection.activeObject is AnimatorState) //lastes = selectiontransition;
+            {
+                AnimatorState selectionstate = Selection.activeObject as AnimatorState;
+
+                if (!batchconnectfan && !batchconnectstrip)
+                    if (GUILayout.Button("Batchconnect Fan"))
+                    {
+
+                        if (selectionstate != null)
                         {
-                            if (GUILayout.Button("Batchconnect States"))
+                            /*
+                            foreach (AnimatorState state in Selection.objects)
                             {
-                                AnimatorState selectionstate = Selection.activeObject as AnimatorState;
-                                if (selectionstate != null)
+                                if (state != selectionstate)
                                 {
-                                    foreach (AnimatorState state in Selection.objects)
-                                    {
-                                        if (state != selectionstate)
-                                        {
-                                            //CreateTransition(lastesstate, state_off, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
-                                            Debug.Log("" + state.name);
-                                        }
-                                    }
+                                                       Debug.Log("" + state.name);
                                 }
-
-
                             }
-                            //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
-                        }
-                        else { EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel); }
+                            */
+                            lastesstate = selectionstate;
+                            lastesfanstate = selectionstate;
+                            batchconnectfan = true;
 
-            */
+
+                        }
+                        //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
+                    }
+
+                if (!batchconnectfan && !batchconnectstrip)
+                    if (GUILayout.Button("Batchconnect Strip"))
+                    {
+
+                        if (selectionstate != null)
+                        {
+
+                            lastesstate = selectionstate;
+                            lastesfanstate = selectionstate;
+                            batchconnectstrip = true;
+
+
+                        }
+                        //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
+                    }
+
+                if (batchconnectfan || batchconnectstrip)
+                {
+                    if (batchconnectfan && lastesstate != selectionstate && selectionstate != lastesfanstate && lastesstate != null)
+                    {
+                        //find first Parameter
+                        CreateEmptyTransition(lastesstate, selectionstate, 0f, 0f, false, false, 0.01f);
+                        lastesfanstate = selectionstate;
+
+                        //tempState = AddTemptstateByState(controller, lastesstate);
+                        //EditorCoroutineUtility.StartCoroutine(DelayedFunction(controller, tempState), this);
+                    }
+
+                    if (batchconnectstrip && lastesstate != selectionstate && selectionstate != lastesfanstate && lastesstate != null)
+                    {
+                        //find first Parameter
+                        CreateEmptyTransition(lastesstate, selectionstate, 0f, 0f, true, false, 0.01f);
+                        lastesstate = selectionstate;
+                        lastesfanstate = selectionstate;
+
+                        //tempState = AddTemptstateByState(controller, lastesstate);
+                        //EditorCoroutineUtility.StartCoroutine(DelayedFunction(controller, tempState), this);
+                    }
+
+
+                    if (GUILayout.Button("Cancel Batchconnect"))
+                    {
+                        batchconnectfan = false;
+                        batchconnectstrip = false;
+                        lastesstate = null;
+                    }
+                }
+            }
+            else { EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel); }
+
+
 
             GUILayout.Space(30);
             if (Selection.activeObject is AnimatorStateTransition)
@@ -99,7 +159,7 @@ public class Animator_Utils
                     */
 
 
-                    if (!binddestination && !bindsource)
+                    if (!binddestination && !bindsource && !batchconnectfan && !batchconnectstrip)
                         if (GUILayout.Button("Bind Destination"))
                         {
                             lastes = selectiontransition;

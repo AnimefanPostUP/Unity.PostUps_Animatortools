@@ -155,6 +155,21 @@ public class Transition_Functions : MonoBehaviour
         return transition;
     }
 
+        public static AnimatorStateTransition CreateEmptyTransition(AnimatorState sourceState, AnimatorState destinationState, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+    {
+        AnimatorStateTransition transition = new AnimatorStateTransition();
+
+        transition.destinationState = destinationState;
+        transition.isExit = isExit;
+        transition.hasExitTime = hasExitTime;
+        transition.duration = duration;
+        transition.offset = offset;
+        transition.exitTime = exitTime;
+        sourceState.AddTransition(transition);
+
+        return transition;
+    }
+
 
     public static void AddCondition(AnimatorStateTransition transition, string parameter, float threshold, AnimatorConditionMode conditionType)
     {

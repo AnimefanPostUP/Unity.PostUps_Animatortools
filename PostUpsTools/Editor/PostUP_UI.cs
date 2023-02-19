@@ -58,7 +58,7 @@ public class PostUP_UI : EditorWindow
     public Animator_Utils animator_Utils;
     public Copy_Tools copy_Tools;
     public Parser_Menu parser_Menu;
-
+    public AnimatorInspector animatorInspector;
     //Basic Inputs ----------------------------------------------------------------------------------------------------------------------------
     public bool customName;
     public string usepath;
@@ -84,10 +84,9 @@ public class PostUP_UI : EditorWindow
 
 
     //UI Refresher ----------------------------------------------------------------------------------------------------------------------------
-    public bool recursionRunning = false;
 
-    public int runningServices = 0;
-
+    public int fluigserviceid=0;
+    public bool fluidping=false;
     public bool runFluidServices = true;
 
 
@@ -116,6 +115,8 @@ public class PostUP_UI : EditorWindow
         animator_Utils = new Animator_Utils();
 
         parser_Menu = new Parser_Menu();
+
+        animatorInspector = new AnimatorInspector();
     }
 
     private void Start()
@@ -127,7 +128,10 @@ public class PostUP_UI : EditorWindow
     {
 
         //UI Refresher ----------------------------------------------------------------------------------------------------------------------------
-        EditorCoroutineUtility.StartCoroutine(UIRefresher(100), this);
+        
+        // generate a random int von 0 to 100000
+        fluigserviceid = UnityEngine.Random.Range(0, 100000);
+        EditorCoroutineUtility.StartCoroutine(UIRefresher(fluigserviceid), this);
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
@@ -186,6 +190,9 @@ public class PostUP_UI : EditorWindow
 
         if (parser_Menu == null)
             parser_Menu = new Parser_Menu();
+
+        if (animatorInspector == null)
+            animatorInspector = new AnimatorInspector();
 
 
         //Inputs ------------------------------------------------------------------------------------------------------------------
@@ -268,6 +275,8 @@ public class PostUP_UI : EditorWindow
             }
 
             copy_Tools.Menu(controller);
+
+            animatorInspector.Menu(controller);
         }
 
 
@@ -295,44 +304,21 @@ public class PostUP_UI : EditorWindow
     //State Functions----------------------------------------------------------------------------------------------------------------------------
 
 
-    IEnumerator UIRefresher(int counter)
+    IEnumerator UIRefresher(int id)
     {
 
-
-        //Debug.Log("Refresher Service Starter");
-
-        //wait delay
         yield return new WaitForSeconds(0.05f);
 
-        //check if Updater is allowed to run (preventing too many services running at once)
-        if (recursionRunning == false && runningServices < 5 && recursionRunning == false && runFluidServices == true)
+        if (id==fluigserviceid && runFluidServices == true)
         {
-
-            //update Service counter
-            runningServices++;
-            recursionRunning = true;
-            EditorCoroutineUtility.StartCoroutine(UIRefresherService(counter), this);
+            //Debug.Log("Refresher Service Running");
+            Repaint(); 
+            fluidping=false;
+            EditorCoroutineUtility.StartCoroutine(UIRefresher(id), this);
         }
 
-    }
+    } 
 
-    IEnumerator UIRefresherService(int counter)
-    {
-        counter = counter - 1;
-
-        //Debug.Log("Service");
-
-
-        yield return new WaitForSeconds(1f);
-
-        if (counter >= 0 && runFluidServices == true)
-        {
-            EditorCoroutineUtility.StartCoroutine(UIRefresherService(counter), this);
-            Repaint();
-        }
-        else { recursionRunning = false; runningServices--; }
-
-    }
 
 
     public IEnumerator Reloadfinisher()
