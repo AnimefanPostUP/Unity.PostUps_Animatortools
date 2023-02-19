@@ -20,6 +20,8 @@ using static Layer_Functions;
 using static Transition_Functions;
 using static AbsoluteAnimations;
 using static Controller_Functions;
+
+using static Boxdrawer;
 public class Copy_Tools
 {
 
@@ -50,19 +52,13 @@ public class Copy_Tools
 
     public void Menu(AnimatorController controller)
     {
-        if (GUILayout.Button("MENU Transition Copytool")) copytool = !copytool;
+        //if (GUILayout.Button("MENU Transition Copytool")) copytool = !copytool;
+        copytool = EditorGUILayout.Foldout(copytool, "Copytool");
 
         if (copytool)
         {
-
-
-
-
             // Begin vertical
             EditorGUILayout.BeginVertical();
-
-
-
 
             //Experimental
             if (cachedTransitions != null)
@@ -71,6 +67,15 @@ public class Copy_Tools
                 //Loop for transitions array
                 for (int i = 0; i < cachedTransitions.Length; i++)
                 {
+
+
+                    GUIStyle transitionBackground = new GUIStyle(GUI.skin.box);
+                    transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.25f, 0.25f, 0.25f), 2f);
+
+                    GUIStyle conditionBackground = new GUIStyle(GUI.skin.box);
+                    conditionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.2f, 0.2f, 0.2f), 2f);
+
+                    GUILayout.BeginVertical(transitionBackground);
 
                     EditorGUILayout.BeginHorizontal();
 
@@ -103,10 +108,14 @@ public class Copy_Tools
                         //Remove transition from array: will be pasted in the end of the code
                         deletetranstiontrigger = true;
                     }
+
+
+
                     EditorGUILayout.LabelField("Transition: " + i, EditorStyles.boldLabel, GUILayout.Width(3f * Screen.width / 8f));
 
-
                     EditorGUILayout.EndHorizontal();
+
+                    GUILayout.BeginVertical();
 
                     //read all Parameters
                     string[] parameters = new string[controller.parameters.Length];
@@ -168,7 +177,7 @@ public class Copy_Tools
                                     {
                                         cachedTransitions[i].conditions[j].parameter = listparameters[index];
 
-                                        //Set mode depending on Type
+                                        //Set mode and other depending on Type
                                         if (controller.parameters[index].type == AnimatorControllerParameterType.Bool)
                                         {
                                             cachedTransitions[i].conditions[j].mode = AnimatorConditionMode.If;
@@ -200,8 +209,7 @@ public class Copy_Tools
                             }
                             GUILayout.Space(25);
                         }
-
-                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.BeginHorizontal(conditionBackground);
 
                         //Menu is parameterselection is false
                         if (!cachedTransitions[i].conditions[j].parameterselection)
@@ -232,9 +240,8 @@ public class Copy_Tools
 
                         }
 
-
                         //Parameter Type
-                        EditorGUILayout.LabelField(">" + type.ToString(), GUILayout.Width(1 * Screen.width / 10f));
+                        EditorGUILayout.LabelField("" + type.ToString(), GUILayout.Width(1 * Screen.width / 10f));
 
                         //Transitions Mode Popup Text
                         string[] options = new string[4];
@@ -242,8 +249,10 @@ public class Copy_Tools
                         //set Text for Popup based on Type
                         if (type == AnimatorControllerParameterType.Float)
                         {
+                            
                             options = new string[2] { "Greater", "Less" };
                             selectedIndex = selectedIndex - 2;
+                            if(selectedIndex>2 || selectedIndex<0) { selectedIndex = 0; } //errocorection for unknow bug that doesnt initialize selected float parameters properly
                         }
                         else if (type == AnimatorControllerParameterType.Bool) //Special Treatment for bool due to the fact that is uses 2 operators as threshold
                         {
@@ -267,8 +276,9 @@ public class Copy_Tools
                         }
                         else //Error
                         {
+                            Debug.LogError("Error: Parameter Type not found");
                             options = new string[1] { "ERROR" };
-                            selectedIndex = 0;
+                            selectedIndex = -1;
 
                         }
 
@@ -321,7 +331,11 @@ public class Copy_Tools
                         {
 
                             float newThreshold;
-                            if (float.TryParse(EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].threshold.ToString(), GUILayout.Width(2 * Screen.width / 10f)), out newThreshold))
+                            string threshold = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].threshold.ToString(), GUILayout.Width(2 * Screen.width / 10f));
+                            //convert dots to commas
+                            threshold = threshold.Replace('.', ',');
+
+                            if (float.TryParse(threshold, out newThreshold))
                             {
                                 cachedTransitions[i].conditions[j].threshold = newThreshold;
                             }
@@ -346,9 +360,6 @@ public class Copy_Tools
 
 
                         EditorGUILayout.EndHorizontal();
-
-
-
                     }
 
 
@@ -385,7 +396,15 @@ public class Copy_Tools
                         //set new condition
                         newConditions[newConditions.Length - 1] = new ToolCondition(parameters2[0], AnimatorConditionMode.Equals, 0);
                         cachedTransitions[i].conditions = newConditions;
+
+
+
                     }
+
+                    GUILayout.EndVertical(); //End Graphic Box for Transitions
+
+
+                    GUILayout.EndVertical();
 
                     GUILayout.Space(25);
                 }
@@ -702,7 +721,18 @@ public class Copy_Tools
 
     }
 
-
+    private Texture2D MakeTex(int width, int height, Color col)
+    {
+        Color[] pix = new Color[width * height];
+        for (int i = 0; i < pix.Length; ++i)
+        {
+            pix[i] = col;
+        }
+        Texture2D result = new Texture2D(width, height);
+        result.SetPixels(pix);
+        result.Apply();
+        return result;
+    }
 
 
 }

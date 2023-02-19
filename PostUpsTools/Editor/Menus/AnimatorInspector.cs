@@ -48,7 +48,8 @@ public class AnimatorInspector
 
     public void Menu(AnimatorController controller)
     {
-        if (GUILayout.Button("MENU Animator Inspector")) copytool = !copytool;
+        
+        copytool = EditorGUILayout.Foldout(copytool, "Inspector (Dummy)");
 
         if (copytool)
         {

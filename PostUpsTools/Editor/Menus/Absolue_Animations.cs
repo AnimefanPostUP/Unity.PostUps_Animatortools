@@ -59,12 +59,7 @@ public class AbsoluteAnimations
     public void GenerateSelected(string  animationName, GameObject target, Animator animator, AnimatorController controller, string usepath, string scenepath)
     {
 
-
-
-        if (GUILayout.Button("MENU Absolute Animations"))
-        {
-            quickgenerators = !quickgenerators;
-        }
+        quickgenerators = EditorGUILayout.Foldout(quickgenerators, "Absolute Animations");
 
         if (quickgenerators)
         {

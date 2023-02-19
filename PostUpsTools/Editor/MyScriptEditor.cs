@@ -8,6 +8,7 @@ using System.Collections;
 
 public class MySriptEditor : EditorWindow
 {
+    
     /*  private const float ButtonWidth = 110f;
         private const float ButtonHeight = 20f;
         private const float CornerRadius = 2f;
@@ -39,37 +40,6 @@ public class MySriptEditor : EditorWindow
         //on repaint
 
     */
-
-      [MenuItem("Window/My Window")]
-        public static void ShowWindow()
-        {
-            EditorWindow.GetWindow<MySriptEditor>("My Window");
-        }
-
-        private void OnEnable()
-        {
-        }
-
-    private void OnGUI()
-    {
-        if (GUILayout.Button("mybutton"))
-        {
-
-            //Call debug
-            Debug.Log("Button clicked!");
-
-            //for loop to create 1000 buttons
-            for (int i = 0; i < 2; i++)
-            {
-                if (GUILayout.Button("mybutton"))
-                {
-                    Debug.Log("Button clicked!");
-                }
-            }
-
-        }
-
-    }
 
 
     /*

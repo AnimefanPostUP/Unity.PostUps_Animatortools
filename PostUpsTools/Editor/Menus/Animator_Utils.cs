@@ -40,9 +40,11 @@ public class Animator_Utils
     }
     public void Menu(AnimatorController controller)
     {
-        if (GUILayout.Button("MENU Animator "))
+
+        animatorutility = EditorGUILayout.Foldout(animatorutility, "Animator Tools");
+
+        if (!animatorutility)
         {
-            animatorutility = !animatorutility;
             binddestination = false;
             bindsource = false;
         }
@@ -51,15 +53,16 @@ public class Animator_Utils
         {
             GUILayout.Space(30);
 
-            if (false)
-            { //Debuggin Method add toggle later
-                if (GUILayout.Button("Clearnup  Parameters (Can Break this Tool))"))
-                {
-                    CleanAnimatorParameters(controller);
-                }
-                //Get All Selected States in the Unity Editor
-            }
-
+            /*
+                        if (false)
+                        { //Debuggin Method add toggle later
+                            if (GUILayout.Button("Clearnup  Parameters (Can Break this Tool))"))
+                            {
+                                CleanAnimatorParameters(controller);
+                            }
+                            //Get All Selected States in the Unity Editor
+                        }
+            */
 
 
             if (Selection.activeObject is AnimatorState) //lastes = selectiontransition;

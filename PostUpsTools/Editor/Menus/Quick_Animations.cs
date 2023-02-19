@@ -31,11 +31,10 @@ public class Quick_Animations
     public void Menu(string animationName, GameObject target, Animator animator, AnimatorController controller, string usepath, string scenepath)
     {
 
+        quickgenerators = EditorGUILayout.Foldout(quickgenerators, "Quick Animations");
 
         if (quickgenerators)
-            quickgenerators = false;
         {
-
             EditorGUILayout.LabelField("Quickanimations:", EditorStyles.boldLabel);
 
             if (GUILayout.Button("Create Toggle Animations"))
@@ -56,7 +55,6 @@ public class Quick_Animations
                 GenerateHueCurve(animationName, target, animator, controller, usepath, scenepath);
             }
         }
-
 
 
     }

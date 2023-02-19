@@ -42,11 +42,11 @@ public class Parser_Menu
     public void Menu(AnimatorController controller)
     {
 
-        if (GUILayout.Button("MENU Transition Parser"))
-        {
-            animatorparser = !animatorparser;
-            bindertrigger = false;
+        animatorparser = EditorGUILayout.Foldout(animatorparser, "Parser (experimental!)");
 
+        if (!animatorparser)
+        {
+            bindertrigger = false;
         }
 
         if (animatorparser)

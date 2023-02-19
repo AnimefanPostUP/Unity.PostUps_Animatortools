@@ -85,8 +85,8 @@ public class PostUP_UI : EditorWindow
 
     //UI Refresher ----------------------------------------------------------------------------------------------------------------------------
 
-    public int fluigserviceid=0;
-    public bool fluidping=false;
+    public int fluigserviceid = 0;
+    public bool fluidping = false;
     public bool runFluidServices = true;
 
 
@@ -128,12 +128,27 @@ public class PostUP_UI : EditorWindow
     {
 
         //UI Refresher ----------------------------------------------------------------------------------------------------------------------------
-        
+
         // generate a random int von 0 to 100000
         fluigserviceid = UnityEngine.Random.Range(0, 100000);
         EditorCoroutineUtility.StartCoroutine(UIRefresher(fluigserviceid), this);
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+        // Set the horizontal margin for the scroll view
+        int horizontalMargin = 7;
+        RectOffset marginOffset = new RectOffset(horizontalMargin, horizontalMargin, 0, 0);
+
+        // Set the width of the scroll view
+        int scrollViewWidth = (int)EditorGUIUtility.currentViewWidth - horizontalMargin * 2;
+
+        // Center the scroll view horizontally
+        GUILayout.BeginVertical();
+        GUILayout.Space(10);
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(horizontalMargin); 
+        Rect scrollViewRect = GUILayoutUtility.GetRect( 0 , 1000);
+        scrollViewRect.height = Screen.height - scrollViewRect.y - 40;
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
+ 
 
         if (GUILayout.Button("Reset UI"))
         {
@@ -256,20 +271,18 @@ public class PostUP_UI : EditorWindow
 
                     //Quickgen ------------------------------------------------------------------------------------------------------------------
 
+
                     GUILayout.Space(20);
+                    EditorGUILayout.LabelField("Animation Tools:", EditorStyles.boldLabel);
                     if (!customName) animationName = target.name;
                     quickAnimations.Menu(animationName, target, animator, controller, usepath, scenepath);
+                    generator.GenerateSelected(animationName, target, animator, controller, usepath, scenepath);
                     GUILayout.Space(20);
-
-                    EditorGUILayout.LabelField("Animator Utils:", EditorStyles.boldLabel);
-                    animator_Utils.Menu(controller);
-
                 }
-                EditorGUILayout.LabelField("Extra Animation Tools:", EditorStyles.boldLabel);
-                generator.GenerateSelected(animationName, target, animator, controller, usepath, scenepath);
 
+                EditorGUILayout.LabelField("Animator Utils:", EditorStyles.boldLabel);
 
-                EditorGUILayout.LabelField("Transistion Utilitys:", EditorStyles.boldLabel);
+                animator_Utils.Menu(controller);
                 parser_Menu.Menu(controller);
 
             }
@@ -282,6 +295,11 @@ public class PostUP_UI : EditorWindow
 
 
         EditorGUILayout.EndScrollView();
+        GUILayout.Space(10);
+        GUILayout.EndHorizontal(); // end horizontal group
+        GUILayout.Space(10);
+        GUILayout.EndVertical(); // end vertical group
+                                 // End ScrollView area
     }
 
     //Method to deselect all objects in the unity editor animator window
@@ -309,15 +327,15 @@ public class PostUP_UI : EditorWindow
 
         yield return new WaitForSeconds(0.05f);
 
-        if (id==fluigserviceid && runFluidServices == true)
+        if (id == fluigserviceid && runFluidServices == true)
         {
             //Debug.Log("Refresher Service Running");
-            Repaint(); 
-            fluidping=false;
+            Repaint();
+            fluidping = false;
             EditorCoroutineUtility.StartCoroutine(UIRefresher(id), this);
         }
 
-    } 
+    }
 
 
 
