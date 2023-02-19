@@ -54,6 +54,8 @@ public class Copy_Tools
     AnimatorState lastesstate;
     AnimatorState lastesfanstate;
 
+    bool reversebatch = false;
+
     //Array of operators
 
 
@@ -132,7 +134,7 @@ public class Copy_Tools
                     EditorGUILayout.EndHorizontal();
 
                     //foldout 
-                    
+
 
                     if (cachedTransitions[i].expandmenu)
                     {
@@ -529,6 +531,9 @@ public class Copy_Tools
             else
             {
                 EditorGUILayout.LabelField("No Condition in Cache", EditorStyles.boldLabel);
+                //space
+                GUILayout.Space(30);
+
                 if (!(Selection.activeObject is AnimatorStateTransition))
                 {
 
@@ -586,8 +591,13 @@ public class Copy_Tools
                     }
                     else EditorGUILayout.LabelField("No Condition to Paste", EditorStyles.boldLabel);
 
+                    //Horizontal Box for Copy,Paste,Overwrite Buttons
+                    GUILayout.BeginHorizontal();
 
-                    if (GUILayout.Button("Copy All Transitions", GUILayout.Width(Screen.width)))
+                    
+                    
+
+                    if (GUILayout.Button("Copy All", GUILayout.Width(Screen.width / 4)))
                     {
                         //initiate transition array
                         cachedTransitions = new ToolTransition[transitions.Length];
@@ -665,13 +675,13 @@ public class Copy_Tools
                                 }
                             }
 
-                        if (checkanycopy == false) EditorGUILayout.LabelField("No Transitions Selected", EditorStyles.boldLabel);
+                        if (checkanycopy == false) EditorGUILayout.LabelField("No Transition Selected", EditorStyles.boldLabel);
 
 
 
 
                         if (cachedTransitions != null && cachedTransitions.Length > 0)
-                            if (checkanycopy && GUILayout.Button("Paste Selected Transitions", GUILayout.Width(Screen.width)))
+                            if (checkanycopy && GUILayout.Button("Paste Selected", GUILayout.Width(Screen.width / 4)))
                             {
 
 
@@ -709,7 +719,7 @@ public class Copy_Tools
 
 
                         if (cachedTransitions != null && cachedTransitions.Length > 0)
-                            if (checkanycopy && GUILayout.Button("Overwrite All Transitions (Reload!)", GUILayout.Width(Screen.width)))
+                            if (checkanycopy && GUILayout.Button("Overwrite All (Reload!)", GUILayout.Width(Screen.width / 3)))
                             {
 
 
@@ -752,6 +762,7 @@ public class Copy_Tools
 
                             }
 
+                        GUILayout.EndHorizontal();
 
 
                         if (pasteTrigger)
@@ -803,7 +814,11 @@ public class Copy_Tools
                     }
                     else
                     {
-                        EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel);
+                        //Begin Vertical
+                        EditorGUILayout.BeginVertical();
+                        EditorGUILayout.LabelField("", EditorStyles.boldLabel, GUILayout.Width(1f));
+                        EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel, GUILayout.Width(Screen.width/1.5f));
+                        EditorGUILayout.EndVertical();
                     }
 
 
@@ -818,8 +833,10 @@ public class Copy_Tools
             {
                 AnimatorState selectionstate = Selection.activeObject as AnimatorState;
 
+                EditorGUILayout.BeginHorizontal();
+
                 if (!batchconnectfan && !batchconnectstrip)
-                    if (GUILayout.Button("Batchconnect Fan"))
+                    if (GUILayout.Button("Batchconnect Fan", GUILayout.Width(Screen.width / 2)))
                     {
 
                         if (selectionstate != null)
@@ -827,12 +844,34 @@ public class Copy_Tools
                             lastesstate = selectionstate;
                             lastesfanstate = selectionstate;
                             batchconnectfan = true;
+                            reversebatch = false;
                         }
                         //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
                     }
 
+
+
                 if (!batchconnectfan && !batchconnectstrip)
-                    if (GUILayout.Button("Batchconnect Strip"))
+                    if (GUILayout.Button("Reverse Fan", GUILayout.Width(Screen.width / 2)))
+                    {
+
+                        if (selectionstate != null)
+                        {
+                            lastesstate = selectionstate;
+                            lastesfanstate = selectionstate;
+                            batchconnectfan = true;
+                            reversebatch = true;
+                        }
+                        //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
+                    }
+
+
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+
+
+                if (!batchconnectfan && !batchconnectstrip)
+                    if (GUILayout.Button("Batchconnect Strip", GUILayout.Width(Screen.width / 2)))
                     {
 
                         if (selectionstate != null)
@@ -840,9 +879,26 @@ public class Copy_Tools
                             lastesstate = selectionstate;
                             lastesfanstate = selectionstate;
                             batchconnectstrip = true;
+                            reversebatch = false;
                         }
                         //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
                     }
+
+                if (!batchconnectfan && !batchconnectstrip)
+                    if (GUILayout.Button("Reverse Strip", GUILayout.Width(Screen.width / 2)))
+                    {
+
+                        if (selectionstate != null)
+                        {
+                            lastesstate = selectionstate;
+                            lastesfanstate = selectionstate;
+                            batchconnectstrip = true;
+                            reversebatch = true;
+                        }
+                        //AddCondition(selectiontransition, "param", 0.0f, AnimatorConditionMode.If);
+                    }
+
+                EditorGUILayout.EndHorizontal();
 
                 if (batchconnectfan || batchconnectstrip)
                 {
@@ -853,6 +909,7 @@ public class Copy_Tools
                         batchconnectfan = false;
                         batchconnectstrip = false;
                         lastesstate = null;
+                        reversebatch = false;
                     }
 
                     if (lastesstate == null || selectionstate == null) { batchconnectfan = false; batchconnectstrip = false; }
@@ -865,14 +922,33 @@ public class Copy_Tools
                         {
                             if (cachedTransitions[i].copy)
                             {
-                                AnimatorStateTransition newtransition = CreateEmptyTransition(
-                                    lastesstate,
-                                     selectionstate,
-                                     cachedTransitions[i].duration,
-                                     cachedTransitions[i].offset,
-                                     cachedTransitions[i].isExit,
-                                     cachedTransitions[i].hasExitTime,
-                                     cachedTransitions[i].exitTime);
+
+                                AnimatorStateTransition newtransition;
+
+                                if (reversebatch)
+                                {
+                                    newtransition = CreateEmptyTransition(
+                                        selectionstate,
+                                        lastesstate,
+                                        cachedTransitions[i].duration,
+                                        cachedTransitions[i].offset,
+                                        cachedTransitions[i].isExit,
+                                        cachedTransitions[i].hasExitTime,
+                                        cachedTransitions[i].exitTime);
+                                }
+                                else
+                                {
+
+                                    newtransition = CreateEmptyTransition(
+                                        lastesstate,
+                                        selectionstate,
+                                        cachedTransitions[i].duration,
+                                        cachedTransitions[i].offset,
+                                        cachedTransitions[i].isExit,
+                                        cachedTransitions[i].hasExitTime,
+                                        cachedTransitions[i].exitTime);
+                                }
+
                                 //iterate through all cachedconditions
                                 for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                                 {
@@ -931,14 +1007,33 @@ public class Copy_Tools
                             if (cachedTransitions[i].copy)
                             {
                                 //(AnimatorState sourceState, AnimatorState destinationState, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
-                                AnimatorStateTransition newtransition = CreateEmptyTransition(
-                                    lastesstate,
-                                     selectionstate,
-                                     cachedTransitions[i].duration,
-                                     cachedTransitions[i].offset,
-                                     cachedTransitions[i].isExit,
-                                     cachedTransitions[i].hasExitTime,
-                                     cachedTransitions[i].exitTime);
+
+                                AnimatorStateTransition newtransition;
+
+                                if (reversebatch)
+                                {
+                                    newtransition = CreateEmptyTransition(
+                                        selectionstate,
+                                        lastesstate,
+                                        cachedTransitions[i].duration,
+                                        cachedTransitions[i].offset,
+                                        cachedTransitions[i].isExit,
+                                        cachedTransitions[i].hasExitTime,
+                                        cachedTransitions[i].exitTime);
+                                }
+                                else
+                                {
+
+                                    newtransition = CreateEmptyTransition(
+                                        lastesstate,
+                                        selectionstate,
+                                        cachedTransitions[i].duration,
+                                        cachedTransitions[i].offset,
+                                        cachedTransitions[i].isExit,
+                                        cachedTransitions[i].hasExitTime,
+                                        cachedTransitions[i].exitTime);
+                                }
+
                                 //iterate through all cachedconditions
                                 for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                                 {
