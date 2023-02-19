@@ -31,8 +31,9 @@ The Addon is maybe Fragile, feel free to test it, but keep in mind that it could
 
 Planned UI Draft (Left) + Current State (Right):
 
-
-
-
-
+![Toggletool](https://user-images.githubusercontent.com/93488236/219905831-5e3f1d23-7fbe-4797-81aa-68c45b08acac.gif)
+![Batchfan](https://user-images.githubusercontent.com/93488236/219905899-a3afbe25-548f-4605-a2fa-6bee4119d5af.gif)
+![Batchstrip](https://user-images.githubusercontent.com/93488236/219905904-3db15bb5-5f18-4100-aa27-eae5a1083f31.gif)
+![Transitiontool](https://user-images.githubusercontent.com/93488236/219905838-c059e404-a1bc-4b60-a222-21e915c36765.gif)
+![Copytool](https://user-images.githubusercontent.com/93488236/219905847-48b6781d-e72a-49fd-a9e7-9515c79bac03.gif)
 ![image (1)](https://user-images.githubusercontent.com/93488236/219712399-c7f26b39-8079-43fc-b58b-effd4a22cdd2.png)
