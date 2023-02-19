@@ -79,7 +79,15 @@ public class Copy_Tools
 
 
                     GUIStyle transitionBackground = new GUIStyle(GUI.skin.box);
-                    transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.25f, 0.25f, 0.25f), 2f);
+
+                    if (cachedTransitions[i].copy)
+                    {
+                        transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.16f, 0.16f, 0.16f), 2f);
+                    }
+                    else
+                    {
+                        transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.26f, 0.26f, 0.26f), 2f);
+                    }
 
                     GUIStyle conditionBackground = new GUIStyle(GUI.skin.box);
                     conditionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.2f, 0.2f, 0.2f), 2f);
@@ -591,11 +599,149 @@ public class Copy_Tools
                     }
                     else EditorGUILayout.LabelField("No Condition to Paste", EditorStyles.boldLabel);
 
+
+                    //add reversed transitions to array
+                    //button
+                    if (GUILayout.Button("Add Selected as Reversed Transitions"))
+                    {
+
+                        bool anyselected = false;
+                        int oldlength = cachedTransitions.Length;
+                        int copylength = oldlength;
+
+                        //iterate cachedTransitions and set abyselected to true if any transition is selected
+                        for (int i = 0; i < cachedTransitions.Length; i++)
+                        {
+                            if (cachedTransitions[i].copy)
+                            {
+                                anyselected = true;
+                            }
+                        }
+
+
+
+
+                        if (anyselected)
+                        {
+                            //iterate Transitions with .copy==true 
+                            int conditioncount = 0;
+
+                            for (int i = 0; i < cachedTransitions.Length; i++)
+                            {
+                                if (cachedTransitions[i].copy)
+                                {
+                                    //count how many conditions are in the transitions
+
+                                    for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
+                                    {
+
+                                        conditioncount++;
+
+                                    }
+                                }
+                            }
+
+                            //create new array with oldlength + conditioncount
+                            ToolTransition[] newTransitions = new ToolTransition[oldlength + conditioncount];
+
+                            //copy old transitions to new array
+                            for (int i = 0; i < oldlength; i++)
+                            {
+                                newTransitions[i] = cachedTransitions[i];
+                            }
+
+                            //iterate Transitions with .copy==true
+                            for (int i = 0; i < cachedTransitions.Length; i++)
+                            {
+                                if (cachedTransitions[i].copy)
+                                {
+                                    //iterate conditions with .copy==true
+                                    for (int j = 0; j < cachedTransitions[i].conditions.Length; j++) //i+oldlength
+                                    {
+                                        //add every condition as single transition to the new array
+
+                                            newTransitions[copylength] = new ToolTransition(true);
+
+                                            //Copy Transition properties
+                                            newTransitions[copylength].duration = cachedTransitions[i].duration;
+                                            newTransitions[copylength].exitTime = cachedTransitions[i].exitTime;
+                                            newTransitions[copylength].hasExitTime = cachedTransitions[i].hasExitTime;
+                                            newTransitions[copylength].offset = cachedTransitions[i].offset;
+                                            //other copy options can be added here
+
+                                            newTransitions[copylength].conditions = new ToolCondition[1];
+                                            newTransitions[copylength].conditions[0] = cachedTransitions[i].conditions[j];
+                                            newTransitions[copylength].conditions[0].threshold = cachedTransitions[i].conditions[j].threshold;
+                                            newTransitions[copylength].conditions[0].parameter = cachedTransitions[i].conditions[j].parameter;
+
+
+                                            //newTransitions[oldlength+i].conditions[0].mode = transitions[i].conditions[j].mode;
+                                            //invert the mode If to IfNot and vice versa
+                                            if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If)
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.IfNot;
+                                            }
+                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot)
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.If;
+                                            }
+
+                                            //invert greater to less and vice versa
+                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.Greater)
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.Less;
+                                            }
+                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.Less)
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.Greater;
+                                            }
+
+                                            //invert greater or equal to less or equal and vice versa
+                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.Equals)
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.NotEqual;
+                                            }
+                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.NotEqual)
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.Equals;
+                                            }
+                                            else
+                                            {
+                                                newTransitions[copylength].conditions[0].mode = cachedTransitions[i].conditions[j].mode;
+                                            }
+
+
+                                            copylength++;
+                                    }
+                                }
+                            }
+
+                            cachedTransitions = newTransitions;
+
+
+                            for (int i = 0; i < oldlength; i++)
+                            {
+                                cachedTransitions[i].copy = false;
+                            }
+                        }
+
+                        //save
+                       
+
+
+
+
+                    }
+
+
+
+
+
+
+
+
                     //Horizontal Box for Copy,Paste,Overwrite Buttons
                     GUILayout.BeginHorizontal();
-
-                    
-                    
 
                     if (GUILayout.Button("Copy All", GUILayout.Width(Screen.width / 4)))
                     {
@@ -817,7 +963,7 @@ public class Copy_Tools
                         //Begin Vertical
                         EditorGUILayout.BeginVertical();
                         EditorGUILayout.LabelField("", EditorStyles.boldLabel, GUILayout.Width(1f));
-                        EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel, GUILayout.Width(Screen.width/1.5f));
+                        EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel, GUILayout.Width(Screen.width / 1.5f));
                         EditorGUILayout.EndVertical();
                     }
 
