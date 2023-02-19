@@ -229,7 +229,7 @@ public class PostUP_UI : EditorWindow
             if (customName) animationName = EditorGUILayout.TextField("Animation Name:", animationName);
 
             //Set Gameobjet for Controller
-            controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Controller Object / AV:", controllergameobject_buffer, typeof(GameObject), true);
+            controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Controller Object / AV:", controllergameobject_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width*0.75f));
 
             //Check if Controller Exists and show Options
             if (controllergameobject == null)
@@ -247,7 +247,7 @@ public class PostUP_UI : EditorWindow
 
 
                 //Set Target Object
-                target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true);
+                target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width*0.75f));
 
                 //if Target is not the same as the last frame, set it to the new one
                 if (target_buffer != target)

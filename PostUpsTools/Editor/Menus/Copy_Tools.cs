@@ -423,7 +423,7 @@ public class Copy_Tools
                                 case AnimatorControllerParameterType.Float:
                                     //Textinput for condition.iteratorfloat including parsing
                                     float newIteratorFloat;
-                                    EditorGUILayout.LabelField("Iterate: ", GUILayout.Width(1 * Screen.width / 10f));
+                                    EditorGUILayout.LabelField("Iterate: ", GUILayout.Width(1 * Screen.width / 16f));
                                     string iteratorFloat = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].iteratorfloat.ToString(), GUILayout.Width(1 * Screen.width / 16f));
                                     //convert dots to commas
                                     iteratorFloat = iteratorFloat.Replace('.', ',');
