@@ -222,7 +222,7 @@ public class Copy_Tools
                                     }
 
                                     //Buttons to select parameter
-                                    if (GUILayout.Button(listparameters[index], GUILayout.Width(Screen.width / columns)))
+                                    if (GUILayout.Button(listparameters[index], GUILayout.Width(Screen.width / columns * 0.8f)))
 
                                     {
                                         cachedTransitions[i].conditions[j].parameter = listparameters[index];
@@ -263,7 +263,7 @@ public class Copy_Tools
 
                         //Menu is parameterselection is false
                         if (!cachedTransitions[i].conditions[j].parameterselection)
-                            if (GUILayout.Button(parameters[param], GUILayout.Width(3 * Screen.width / 10f)))
+                            if (GUILayout.Button(parameters[param], GUILayout.Width(2 * Screen.width / 12f)))
                             {
                                 cachedTransitions[i].conditions[j].parameterselection = !cachedTransitions[i].conditions[j].parameterselection;
                             }
@@ -276,7 +276,7 @@ public class Copy_Tools
                         selectedIndex = modeToInt(cachedTransitions[i].conditions[j].mode);
 
                         //Parameter Type
-                        EditorGUILayout.LabelField("" + type.ToString(), GUILayout.Width(1 * Screen.width / 10f));
+                        EditorGUILayout.LabelField("" + type.ToString(), GUILayout.Width(1 * Screen.width / 16f));
 
                         //Transitions Mode Popup Text
                         string[] options = new string[4];
@@ -287,7 +287,12 @@ public class Copy_Tools
 
                             options = new string[2] { "Greater", "Less" };
                             selectedIndex = selectedIndex - 2;
+
                             if (selectedIndex > 2 || selectedIndex < 0) { selectedIndex = 0; } //errocorection for unknow bug that doesnt initialize selected float parameters properly
+                            //POPUP
+                            selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 10f));
+
+
                         }
                         else if (type == AnimatorControllerParameterType.Bool) //Special Treatment for bool due to the fact that is uses 2 operators as threshold
                         {
@@ -298,7 +303,34 @@ public class Copy_Tools
 
                             options = new string[2] { "True", "False" };
 
+                            //POPUP
                             selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 18f));
+
+                            if (batchconnectfan || batchconnectstrip)
+                            {
+                                AnimatorConditionMode tempmode = cachedTransitions[i].conditions[j].mode;
+                                //add condition to transition object
+                                if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If && cachedTransitions[i].conditions[j].iteratorvaluebool)
+                                {
+                                    EditorGUILayout.LabelField("false", GUILayout.Width(1 * Screen.width / 16f));
+                                }
+                                else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot && cachedTransitions[i].conditions[j].iteratorvaluebool)
+                                {
+                                    EditorGUILayout.LabelField("true", GUILayout.Width(1 * Screen.width / 16f));
+                                } 
+                                else if(cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If )
+                                {
+                                    EditorGUILayout.LabelField("true", GUILayout.Width(1 * Screen.width / 16f));
+                                }else if(cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot )
+                                {
+                                    EditorGUILayout.LabelField("false", GUILayout.Width(1 * Screen.width / 16f));
+                                }
+
+                                //label with tempmode string
+                                
+                            }
+
+
 
                         }
                         else
@@ -306,10 +338,16 @@ public class Copy_Tools
                         {
                             options = new string[1] { "==" };
                             selectedIndex = 0;
+                            selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 10f));
+
+
                         }
                         else if (type == AnimatorControllerParameterType.Int) //Int uses 4 operators
                         {
                             options = new string[4] { "Equals", "NotEqual", "Greater", "Less" };
+                            selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 10f));
+
+                          
                         }
                         else //Error
                         {
@@ -319,9 +357,6 @@ public class Copy_Tools
 
                         }
 
-                        //Popup
-                        if (type != AnimatorControllerParameterType.Bool)
-                            selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 10f));
 
 
                         //Convert Popup Index
@@ -346,12 +381,40 @@ public class Copy_Tools
                         {
                             string thresholdstring = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].threshold.ToString(), GUILayout.Width(2 * Screen.width / 18f));
                             cachedTransitions[i].conditions[j].setFloatTresholdByString(thresholdstring);
+
+                               if (batchconnectfan || batchconnectstrip)
+                            {
+                                if (cachedTransitions[i].conditions[j].iteratorvaluefloat >= 0)
+                                {
+                                    EditorGUILayout.LabelField("+" + cachedTransitions[i].conditions[j].iteratorvaluefloat.ToString(), GUILayout.Width(1 * Screen.width / 16f));
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField("" + cachedTransitions[i].conditions[j].iteratorvaluefloat.ToString(), GUILayout.Width(1 * Screen.width / 16f));
+                                }
+                            }   
+
+
                         }
                         else if (type == AnimatorControllerParameterType.Int)
                         {
                             //handle integer
                             string thresholdstring = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].threshold.ToString(), GUILayout.Width(2 * Screen.width / 18f));
                             cachedTransitions[i].conditions[j].setIntTresholdByString(thresholdstring);
+
+                              if (batchconnectfan || batchconnectstrip)
+                            {
+                                //label with iteravalue
+                                if (cachedTransitions[i].conditions[j].iteratorvalue >= 0)
+                                {
+                                    EditorGUILayout.LabelField("+" + cachedTransitions[i].conditions[j].iteratorvalue.ToString(), GUILayout.Width(1 * Screen.width / 16f));
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField("" + cachedTransitions[i].conditions[j].iteratorvalue.ToString(), GUILayout.Width(1 * Screen.width / 16f));
+                                }
+                            }
+
                         }
 
 
@@ -373,13 +436,13 @@ public class Copy_Tools
                                 case AnimatorControllerParameterType.Bool:
                                     //checkbox for condition.flip
                                     //label
-                                    EditorGUILayout.LabelField("Invert: ", GUILayout.Width(1 * Screen.width / 20f));
+                                    EditorGUILayout.LabelField("Invert: ", GUILayout.Width(2 * Screen.width / 20f));
                                     cachedTransitions[i].conditions[j].flip = EditorGUILayout.Toggle(cachedTransitions[i].conditions[j].flip, GUILayout.Width(15));
                                     break;
                                 case AnimatorControllerParameterType.Float:
                                     //Textinput for condition.iteratorfloat including parsing
                                     float newIteratorFloat;
-                                    EditorGUILayout.LabelField("Iterate: ", GUILayout.Width(1 * Screen.width / 20f));
+                                    EditorGUILayout.LabelField("Iterate: ", GUILayout.Width(2 * Screen.width / 20f));
                                     string iteratorFloat = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].iteratorfloat.ToString(), GUILayout.Width(1 * Screen.width / 16f));
                                     //convert dots to commas
                                     iteratorFloat = iteratorFloat.Replace('.', ',');
@@ -391,7 +454,7 @@ public class Copy_Tools
                                 case AnimatorControllerParameterType.Int:
                                     //Textinput for condition.iterator including parsing
                                     int newIterator;
-                                    EditorGUILayout.LabelField("Iterate: ", GUILayout.Width(1 * Screen.width / 20f));
+                                    EditorGUILayout.LabelField("Iterate: ", GUILayout.Width(2 * Screen.width / 20f));
                                     if (int.TryParse(EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].iterator.ToString(), GUILayout.Width(1 * Screen.width / 16f)), out newIterator))
                                     {
                                         cachedTransitions[i].conditions[j].iterator = newIterator;
@@ -617,7 +680,7 @@ public class Copy_Tools
                                     //invert the mode If to IfNot and vice versa
 
 
-                                     newTransitions[copylength].conditions[0].mode = InvertMode(cachedTransitions[i].conditions[j].mode);
+                                    newTransitions[copylength].conditions[0].mode = InvertMode(cachedTransitions[i].conditions[j].mode);
 
                                     copylength++;
                                 }
@@ -839,7 +902,7 @@ public class Copy_Tools
                         GUILayout.EndHorizontal();
 
 
-                        if (GUILayout.Button("Copy Add to Cache", GUILayout.Width(3.37f*Screen.width / 4)))
+                        if (GUILayout.Button("Copy Add to Cache", GUILayout.Width(3.37f * Screen.width / 4)))
                         {
                             //init newarray
                             ToolTransition[] newarray;
@@ -855,15 +918,15 @@ public class Copy_Tools
                                 //Debug transition name
                                 //Debug.Log("Transition " + i + " copied");
 
-                                newarray[cachedTransitions.Length+i] = new ToolTransition(true);
+                                newarray[cachedTransitions.Length + i] = new ToolTransition(true);
 
                                 //copy transitions properties to cache
                                 //cachedTransitions[i].isExit = transitions[i].isExit;
-                                newarray[cachedTransitions.Length+i].hasExitTime = transitions[i].hasExitTime;
+                                newarray[cachedTransitions.Length + i].hasExitTime = transitions[i].hasExitTime;
                                 //cachedTransitions[i].hasFixedDuration = transitions[i].hasFixedDuration;
-                                newarray[cachedTransitions.Length+i].exitTime = transitions[i].exitTime;
-                                newarray[cachedTransitions.Length+i].duration = transitions[i].duration;
-                                newarray[cachedTransitions.Length+i].offset = transitions[i].offset;
+                                newarray[cachedTransitions.Length + i].exitTime = transitions[i].exitTime;
+                                newarray[cachedTransitions.Length + i].duration = transitions[i].duration;
+                                newarray[cachedTransitions.Length + i].offset = transitions[i].offset;
                                 //cachedTransitions[i].mute = transitions[i].mute;
                                 //cachedTransitions[i].solo = transitions[i].solo;
                                 //cachedTransitions[i].canTransitionToSelf = transitions[i].canTransitionToSelf;
@@ -875,11 +938,11 @@ public class Copy_Tools
                                 //cachedTransitions[i].keepAnimatorControllerStateOnDisable = transitions[i].keepAnimatorControllerStateOnDisable;
 
                                 //initiate ToolCondition array
-                                newarray[cachedTransitions.Length+i].conditions = new ToolCondition[transitions[i].conditions.Length];
+                                newarray[cachedTransitions.Length + i].conditions = new ToolCondition[transitions[i].conditions.Length];
 
                                 for (int j = 0; j < transitions[i].conditions.Length; j++)
                                 {
-                                    newarray[cachedTransitions.Length+i].conditions[j] = new ToolCondition(transitions[i].conditions[j].parameter, transitions[i].conditions[j].mode, transitions[i].conditions[j].threshold);
+                                    newarray[cachedTransitions.Length + i].conditions[j] = new ToolCondition(transitions[i].conditions[j].parameter, transitions[i].conditions[j].mode, transitions[i].conditions[j].threshold);
                                 }
                             }
 
@@ -965,7 +1028,7 @@ public class Copy_Tools
                 EditorGUILayout.BeginHorizontal();
 
                 if (!batchconnectfan && !batchconnectstrip)
-                    if (GUILayout.Button("Batchconnect Fan", GUILayout.Width(Screen.width / 2)))
+                    if (GUILayout.Button("Batchconnect Fan", GUILayout.Width(Screen.width / 2.3f)))
                     {
 
                         if (selectionstate != null)
@@ -981,7 +1044,7 @@ public class Copy_Tools
 
 
                 if (!batchconnectfan && !batchconnectstrip)
-                    if (GUILayout.Button("Reverse Fan", GUILayout.Width(Screen.width / 2)))
+                    if (GUILayout.Button("Reverse Fan", GUILayout.Width(Screen.width / 2.3f)))
                     {
 
                         if (selectionstate != null)
@@ -1000,7 +1063,7 @@ public class Copy_Tools
 
 
                 if (!batchconnectfan && !batchconnectstrip)
-                    if (GUILayout.Button("Batchconnect Strip", GUILayout.Width(Screen.width / 2)))
+                    if (GUILayout.Button("Batchconnect Strip", GUILayout.Width(Screen.width / 2.3f)))
                     {
 
                         if (selectionstate != null)
@@ -1014,7 +1077,7 @@ public class Copy_Tools
                     }
 
                 if (!batchconnectfan && !batchconnectstrip)
-                    if (GUILayout.Button("Reverse Strip", GUILayout.Width(Screen.width / 2)))
+                    if (GUILayout.Button("Reverse Strip", GUILayout.Width(Screen.width / 2.3f)))
                     {
 
                         if (selectionstate != null)
@@ -1039,6 +1102,17 @@ public class Copy_Tools
                         batchconnectstrip = false;
                         lastesstate = null;
                         reversebatch = false;
+
+                        //iterate all cachedtransitions
+                        for (int i = 0; i < cachedTransitions.Length; i++)
+                        {
+                            //iterate all cachedconditions
+                            for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
+                            {
+                                cachedTransitions[i].conditions[j].resetIteratorValues();
+                            }
+                        }
+
                     }
 
                     if (lastesstate == null || selectionstate == null) { batchconnectfan = false; batchconnectstrip = false; }
@@ -1081,35 +1155,53 @@ public class Copy_Tools
                                 //iterate through all cachedconditions
                                 for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                                 {
+                                    AnimatorConditionMode tempmode = cachedTransitions[i].conditions[j].mode;
+
                                     //add condition to transition object
-                                    newtransition.AddCondition(cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold, cachedTransitions[i].conditions[j].parameter);
+                                    if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If && cachedTransitions[i].conditions[j].iteratorvaluebool)
+                                    {
+                                        tempmode = AnimatorConditionMode.IfNot;
+                                    }
+                                    else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot && cachedTransitions[i].conditions[j].iteratorvaluebool)
+                                    {
+                                        tempmode = AnimatorConditionMode.If;
+                                    }
+
+
+
 
                                     //get parameter type:
                                     AnimatorControllerParameterType paramtype = GetParameterType(controller, cachedTransitions[i].conditions[j].parameter);
 
-                                    //switch parameter type
+                                    //add iterator by type
                                     switch (paramtype)
                                     {
                                         case AnimatorControllerParameterType.Bool:
                                             //get mode of current condition
-                                            AnimatorConditionMode mode = cachedTransitions[i].conditions[j].mode;
+                                            newtransition.AddCondition(tempmode,
+                                            cachedTransitions[i].conditions[j].threshold,
+                                            cachedTransitions[i].conditions[j].parameter);
 
-                                            if (cachedTransitions[i].conditions[j].flip)
-                                            {
-                                                if (mode == AnimatorConditionMode.If)
-                                                    mode = AnimatorConditionMode.IfNot;
-                                                else if (mode == AnimatorConditionMode.IfNot)
-                                                    mode = AnimatorConditionMode.If;
-                                            }
+                                            cachedTransitions[i].conditions[j].iteratorvaluebool = !cachedTransitions[i].conditions[j].iteratorvaluebool;
 
                                             break;
                                         case AnimatorControllerParameterType.Float:
-                                            //add condition.iteratorfloat to threshold if condition.flip is true
-                                            cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorfloat;
+
+                                            newtransition.AddCondition(cachedTransitions[i].conditions[j].mode,
+                                            cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorvaluefloat,
+                                            cachedTransitions[i].conditions[j].parameter);
+
+                                            cachedTransitions[i].conditions[j].iteratorvaluefloat = cachedTransitions[i].conditions[j].iteratorvaluefloat + cachedTransitions[i].conditions[j].iteratorfloat;
+                                            //cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorfloat;
+
                                             break;
                                         case AnimatorControllerParameterType.Int:
-                                            //add condition.iterator to threshold if condition.flip is true
-                                            cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iterator;
+
+                                            newtransition.AddCondition(cachedTransitions[i].conditions[j].mode,
+                                            cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorvalue,
+                                            cachedTransitions[i].conditions[j].parameter);
+                                            cachedTransitions[i].conditions[j].iteratorvalue = cachedTransitions[i].conditions[j].iteratorvalue + cachedTransitions[i].conditions[j].iterator;
+                                            //cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iterator;
                                             break;
                                         case AnimatorControllerParameterType.Trigger:
                                             //nothing to do
@@ -1166,8 +1258,20 @@ public class Copy_Tools
                                 //iterate through all cachedconditions
                                 for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
                                 {
+
+                                    AnimatorConditionMode tempmode = cachedTransitions[i].conditions[j].mode;
+
                                     //add condition to transition object
-                                    newtransition.AddCondition(cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold, cachedTransitions[i].conditions[j].parameter);
+                                    if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If && cachedTransitions[i].conditions[j].iteratorvaluebool)
+                                    {
+                                        tempmode = AnimatorConditionMode.IfNot;
+                                    }
+                                    else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot && cachedTransitions[i].conditions[j].iteratorvaluebool)
+                                    {
+                                        tempmode = AnimatorConditionMode.If;
+                                    }
+
+
 
                                     //get parameter type:
                                     AnimatorControllerParameterType paramtype = GetParameterType(controller, cachedTransitions[i].conditions[j].parameter);
@@ -1177,24 +1281,30 @@ public class Copy_Tools
                                     {
                                         case AnimatorControllerParameterType.Bool:
                                             //get mode of current condition
-                                            AnimatorConditionMode mode = cachedTransitions[i].conditions[j].mode;
+                                            newtransition.AddCondition(tempmode,
+                                            cachedTransitions[i].conditions[j].threshold,
+                                            cachedTransitions[i].conditions[j].parameter);
 
-                                            if (cachedTransitions[i].conditions[j].flip)
-                                            {
-                                                if (mode == AnimatorConditionMode.If)
-                                                    mode = AnimatorConditionMode.IfNot;
-                                                else if (mode == AnimatorConditionMode.IfNot)
-                                                    mode = AnimatorConditionMode.If;
-                                            }
+                                            cachedTransitions[i].conditions[j].iteratorvaluebool = !cachedTransitions[i].conditions[j].iteratorvaluebool;
 
                                             break;
                                         case AnimatorControllerParameterType.Float:
-                                            //add condition.iteratorfloat to threshold if condition.flip is true
-                                            cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorfloat;
+
+                                            newtransition.AddCondition(cachedTransitions[i].conditions[j].mode,
+                                            cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorvaluefloat,
+                                            cachedTransitions[i].conditions[j].parameter);
+
+                                            cachedTransitions[i].conditions[j].iteratorvaluefloat = cachedTransitions[i].conditions[j].iteratorvaluefloat + cachedTransitions[i].conditions[j].iteratorfloat;
+                                            //cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorfloat;
+
                                             break;
                                         case AnimatorControllerParameterType.Int:
-                                            //add condition.iterator to threshold if condition.flip is true
-                                            cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iterator;
+
+                                            newtransition.AddCondition(cachedTransitions[i].conditions[j].mode,
+                                            cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iteratorvalue,
+                                            cachedTransitions[i].conditions[j].parameter);
+                                            cachedTransitions[i].conditions[j].iteratorvalue = cachedTransitions[i].conditions[j].iteratorvalue + cachedTransitions[i].conditions[j].iterator;
+                                            //cachedTransitions[i].conditions[j].threshold = cachedTransitions[i].conditions[j].threshold + cachedTransitions[i].conditions[j].iterator;
                                             break;
                                         case AnimatorControllerParameterType.Trigger:
                                             //nothing to do

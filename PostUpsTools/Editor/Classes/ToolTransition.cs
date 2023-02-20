@@ -132,6 +132,11 @@ public class ToolCondition
     public int iterator;
     public bool flip;
 
+    public int iteratorvalue;
+    public float iteratorvaluefloat;
+
+    public bool iteratorvaluebool;
+
     public ToolCondition(string parameter, AnimatorConditionMode mode, float threshold)
     {
         this.parameter = parameter;
@@ -141,6 +146,10 @@ public class ToolCondition
         flip = false;
         iterator = 0;
         iteratorfloat = 0.0f;
+
+        iteratorvalue = 0;
+        iteratorvaluefloat = 0.0f;
+        iteratorvaluebool = false;
     }
 
     public void setFloatTresholdByString(string threshold)
@@ -169,6 +178,12 @@ public class ToolCondition
         }
 
         this.threshold = newThreshold;
+    }
+
+    public void resetIteratorValues(){
+        iteratorvalue = 0;
+        iteratorvaluefloat = 0.0f;
+        iteratorvaluebool = false;
     }
 
 
