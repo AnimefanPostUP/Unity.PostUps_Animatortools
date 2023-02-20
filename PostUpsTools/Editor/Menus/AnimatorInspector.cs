@@ -37,9 +37,9 @@ public class AnimatorInspector
     AnimatorStateTransition[] transitions;
     ToolTransition[] cachedTransitions;
 
-    private int columns = 3;
-    private bool deletetranstiontrigger;
-    private int deleteindex;
+    //private int columns = 3;
+    //private bool deletetranstiontrigger;
+    //private int deleteindex;
     private bool pasteTrigger;
     private int pasteIndex;
 

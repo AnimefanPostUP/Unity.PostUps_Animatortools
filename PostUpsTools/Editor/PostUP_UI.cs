@@ -147,13 +147,13 @@ public class PostUP_UI : EditorWindow
         int scrollViewWidth = (int)EditorGUIUtility.currentViewWidth - horizontalMargin * 2;
 
         // Center the scroll view horizontally
-        GUILayout.BeginVertical();
-        GUILayout.Space(10);
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(5);
         GUILayout.BeginHorizontal();
         GUILayout.Space(horizontalMargin);
         Rect scrollViewRect = GUILayoutUtility.GetRect(0, 1000);
         scrollViewRect.height = Screen.height - scrollViewRect.y - 40;
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, true, false);
 
 
         //Horizontal Layout
@@ -188,7 +188,7 @@ public class PostUP_UI : EditorWindow
             if (animator != null)
             {
                 controller = animator.runtimeAnimatorController as AnimatorController;
-                if (controller == null) { Debug.LogError("No Controller"); controllergameobject = null; controllergameobject_buffer = null; }
+                if (controller == null) { EditorGUILayout.HelpBox("No Controller", MessageType.Warning); controllergameobject = null; controllergameobject_buffer = null; }
             }
         }
 
@@ -238,7 +238,7 @@ public class PostUP_UI : EditorWindow
         //Show options if path is valid
         if (usepath == null)
         {
-            EditorGUILayout.LabelField("Select Save Folder for Animations Please!");
+            EditorGUILayout.HelpBox("No Folder Selected!", MessageType.Warning);
         }
         else
         {
@@ -268,7 +268,7 @@ public class PostUP_UI : EditorWindow
             //Check if Controller Exists and show Options
             if (controllergameobject == null)
             {
-                EditorGUILayout.LabelField("Select a Object for the Controller for Showing Options (A Controller will be created called Generator in PostUpsTools Folder)");
+                EditorGUILayout.HelpBox("No Controller", MessageType.Warning);
                 GUILayout.Space(10);
                 GUILayout.EndVertical();
             }
@@ -285,21 +285,25 @@ public class PostUP_UI : EditorWindow
 
                 //Set Target Object
                 target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width * 0.75f));
-                GUILayout.Space(10);
-                GUILayout.EndVertical();
+
 
                 //if Target is not the same as the last frame, set it to the new one
                 if (target_buffer != target)
                     target = target_buffer;
 
+
                 //Show Options if Target exists
                 if (target == null)
                 {
-                    EditorGUILayout.LabelField("Select a Target Object for Animation Options");
-                    GUILayout.Space(20);
+                    EditorGUILayout.HelpBox("No Target Selected", MessageType.Info);
+                    GUILayout.Space(10);
+                    GUILayout.EndVertical();
                 }
                 else
                 {
+
+                    GUILayout.Space(10);
+                    GUILayout.EndVertical();
 
                     //write Path
                     scenepath = GetRelativePathFromTo(controllergameobject_buffer, target);
@@ -362,7 +366,10 @@ public class PostUP_UI : EditorWindow
         }
 
 
-        GUILayout.Space(150);
+        //Spacer for Scrollview
+        GUILayout.Space(500);
+        EditorGUILayout.LabelField(".", EditorStyles.boldLabel);
+
         EditorGUILayout.EndScrollView();
         GUILayout.Space(10);
         GUILayout.EndHorizontal(); // end horizontal group
