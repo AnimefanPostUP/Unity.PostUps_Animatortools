@@ -608,7 +608,6 @@ public class Copy_Tools
 
                                     newTransitions[copylength].conditions = new ToolCondition[1];
 
-                                    //FIX THAT WTH
                                     newTransitions[copylength].conditions[0] = new ToolCondition(cachedTransitions[i].conditions[j].parameter, cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold);
                                     newTransitions[copylength].conditions[0].threshold = cachedTransitions[i].conditions[j].threshold;
                                     newTransitions[copylength].conditions[0].parameter = cachedTransitions[i].conditions[j].parameter;
@@ -618,7 +617,7 @@ public class Copy_Tools
                                     //invert the mode If to IfNot and vice versa
 
 
-                                    cachedTransitions[i].conditions[j].mode = InvertMode(cachedTransitions[i].conditions[j].mode);
+                                     newTransitions[copylength].conditions[0].mode = InvertMode(cachedTransitions[i].conditions[j].mode);
 
                                     copylength++;
                                 }
