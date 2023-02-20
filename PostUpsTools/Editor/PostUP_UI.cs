@@ -178,21 +178,26 @@ public class PostUP_UI : EditorWindow
 
 
         //Update controller if New Controller is selected
-        if (controllergameobject_buffer != controllergameobject)
+
+        controllergameobject = controllergameobject_buffer;
+
+        if (controllergameobject != null)
         {
-            controllergameobject = controllergameobject_buffer;
+            animator = controllergameobject.GetComponent<Animator>();
 
-            if (controllergameobject != null)
+            if (animator != null)
             {
-                animator = controllergameobject.GetComponent<Animator>();
-
-                if (animator != null)
-                {
-                    controller = animator.runtimeAnimatorController as AnimatorController;
-                    if (controller == null) { Debug.LogError("No Controller"); }
-                }
+                controller = animator.runtimeAnimatorController as AnimatorController;
+                if (controller == null) { Debug.LogError("No Controller"); controllergameobject = null; controllergameobject_buffer = null; }
             }
         }
+
+
+
+
+
+        //get controller filename
+
 
         //Initialize GUI Element Objects
 
@@ -226,7 +231,9 @@ public class PostUP_UI : EditorWindow
         //Folder Selection
         usepath = folder_dialog.FolderDialogGUI();
         EditorGUILayout.LabelField("Selected Folder:" + usepath, EditorStyles.boldLabel);
-        GUILayout.Space(20);
+        GUILayout.Space(5);
+
+        GUILayout.Space(15);
 
         //Show options if path is valid
         if (usepath == null)
@@ -237,7 +244,7 @@ public class PostUP_UI : EditorWindow
         {
 
 
-             GUILayout.BeginVertical(background);
+            GUILayout.BeginVertical(background);
             GUILayout.Space(10);
 
             //Check for Custom Name Checkbox and show Textfield
@@ -246,6 +253,17 @@ public class PostUP_UI : EditorWindow
 
             //Set Gameobjet for Controller
             controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Controller Object / AV:", controllergameobject_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width * 0.75f));
+
+            //show controller path:
+
+            if (controller != null)
+            {
+                string controllerpath = AssetDatabase.GetAssetPath(controller);
+                //label with path
+                EditorGUILayout.LabelField("Selected Controller:" + controllerpath, EditorStyles.boldLabel);
+            }
+            GUILayout.Space(10);
+
 
             //Check if Controller Exists and show Options
             if (controllergameobject == null)
@@ -331,7 +349,7 @@ public class PostUP_UI : EditorWindow
             }
 
 
-            
+
             GUILayout.BeginVertical(background);
             copy_Tools.Menu(controller);
             GUILayout.EndVertical();
@@ -344,13 +362,16 @@ public class PostUP_UI : EditorWindow
         }
 
 
-
+        GUILayout.Space(150);
         EditorGUILayout.EndScrollView();
         GUILayout.Space(10);
         GUILayout.EndHorizontal(); // end horizontal group
         GUILayout.Space(10);
         GUILayout.EndVertical(); // end vertical group
                                  // End ScrollView area
+
+
+
     }
 
     //Method to deselect all objects in the unity editor animator window

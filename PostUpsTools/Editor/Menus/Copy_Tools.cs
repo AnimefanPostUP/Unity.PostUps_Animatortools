@@ -670,7 +670,9 @@ public class Copy_Tools
                                             //other copy options can be added here
 
                                             newTransitions[copylength].conditions = new ToolCondition[1];
-                                            newTransitions[copylength].conditions[0] = cachedTransitions[i].conditions[j];
+
+                                            //FIX THAT WTH
+                                            newTransitions[copylength].conditions[0] = new ToolCondition(cachedTransitions[i].conditions[j].parameter, cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold);
                                             newTransitions[copylength].conditions[0].threshold = cachedTransitions[i].conditions[j].threshold;
                                             newTransitions[copylength].conditions[0].parameter = cachedTransitions[i].conditions[j].parameter;
 
