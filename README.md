@@ -6,7 +6,8 @@
     VR Chat Animator Toolkit
     
 ![Screenshot_20230219_181847](https://user-images.githubusercontent.com/93488236/219963956-e4af767e-dda0-429f-97a3-45307c3b1e72.png)
-![Screenshot_20230219_231812](https://user-images.githubusercontent.com/93488236/219978476-a087bb86-f32b-4e1b-8ce5-7b7c8c8c3242.png)
+![Screenshot_20230220_165721](https://user-images.githubusercontent.com/93488236/220152804-753facf6-e5d3-430d-ba27-a471a4e208ed.png)
+
 
 
     
@@ -42,12 +43,27 @@ Read Wiki for Function Descriptions
 The Addon is maybe Fragile, feel free to test it, but keep in mind that it could potentially kill the Controller you are working on
 
 
+Toggletool Preview:
+![Toggletool2](https://user-images.githubusercontent.com/93488236/220158134-de209f13-bb54-4b1a-85d4-f00ad6f93a24.gif)
 
-![Toggletool](https://user-images.githubusercontent.com/93488236/219905831-5e3f1d23-7fbe-4797-81aa-68c45b08acac.gif)
-![Batchfan](https://user-images.githubusercontent.com/93488236/219905899-a3afbe25-548f-4605-a2fa-6bee4119d5af.gif)
-![Batchstrip](https://user-images.githubusercontent.com/93488236/219905904-3db15bb5-5f18-4100-aa27-eae5a1083f31.gif)
-![Transitiontool](https://user-images.githubusercontent.com/93488236/219905838-c059e404-a1bc-4b60-a222-21e915c36765.gif)
-![Copytool](https://user-images.githubusercontent.com/93488236/219905847-48b6781d-e72a-49fd-a9e7-9515c79bac03.gif)
+Batchconnect Fan Preview:
+![batchconnect fan2](https://user-images.githubusercontent.com/93488236/220157899-283b5e2e-5d66-474a-be1f-1e229fc91455.gif)
+
+Batchconnect Strip Preview:
+![batchconnect strip2](https://user-images.githubusercontent.com/93488236/220157910-10a79bf7-cbc7-444b-a9db-6e174cbbb742.gif)
+
+Transition Tool Preview:
+![Transitiontool2](https://user-images.githubusercontent.com/93488236/220157938-8ffb30db-dc46-49b3-a492-94c28e7f5a8f.gif)
+
+Copy for Transition with one Parameter Change Preview:
+![Copytool Single Param](https://user-images.githubusercontent.com/93488236/220160256-fef99f65-945c-43cf-acb4-67d7d79605b2.gif)
+
+Create Reversed Transitions:
+![Copytool Reverse Conditions](https://user-images.githubusercontent.com/93488236/220160269-aa8e2209-c3c3-4b9c-b66b-68e4a2c648cf.gif)
+
+Copy for another Use:
+![Copytool Copy Transitions3](https://user-images.githubusercontent.com/93488236/220160284-272e624b-7886-46ef-bd07-2dd9017e2fe1.gif)
+
 
 Planned UI Draft (Left) + Current State (Right):
 
