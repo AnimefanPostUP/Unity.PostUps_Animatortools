@@ -21,6 +21,29 @@ using static Parser_Functions;
 using static Save_Functions;
 using static AbsoluteAnimations;
 
+/*
+
+Add VRC Implementation here for Detecting the Active Controller and if the SDK is present
+
+// Check if the UnityEngine.UI namespace is present
+#if UNITY_EDITOR
+using UnityEngine.UI;
+#endif
+
+// Use classes from the UnityEngine.UI namespace
+#if UNITY_EDITOR
+if (typeof(Button) != null)
+{
+    // The UnityEngine.UI namespace exists, use the Button class
+}
+else
+{
+    // The UnityEngine.UI namespace does not exist
+}
+#endif
+
+*/
+
 using static Boxdrawer;
 
 //TODO
