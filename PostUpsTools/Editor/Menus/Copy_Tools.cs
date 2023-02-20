@@ -124,6 +124,7 @@ public class Copy_Tools
                     {
                         //Remove transition from array: will be pasted in the end of the code
                         deletetranstiontrigger = true;
+                        deleteindex = i;
                     }
 
 
@@ -578,31 +579,10 @@ public class Copy_Tools
 
             GUILayout.Space(30);
 
-
-            if (Selection.activeObject != null)
-                if (Selection.activeObject is AnimatorStateTransition)
-                {
-
-
-
-                    //Get all transitions with the same source and destination
-                    AnimatorStateTransition selectiontransition = Selection.activeObject as AnimatorStateTransition;
-                    transitions = GetTransitions(controller, GetSourceState(controller, selectiontransition), selectiontransition.destinationState);
-
-
-                    //transitionlist to array
-
-                    if (cachedTransitions != null)
-                    {
-
-
-                    }
-                    else EditorGUILayout.LabelField("No Condition to Paste", EditorStyles.boldLabel);
-
-
-                    //add reversed transitions to array
-                    //button
-                    if (GUILayout.Button("Add Selected as Reversed Transitions"))
+            if(cachedTransitions != null)
+            {
+            
+                                        if (GUILayout.Button("Add Selected as Reversed Transitions"))
                     {
 
                         bool anyselected = false;
@@ -679,39 +659,9 @@ public class Copy_Tools
 
                                             //newTransitions[oldlength+i].conditions[0].mode = transitions[i].conditions[j].mode;
                                             //invert the mode If to IfNot and vice versa
-                                            if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If)
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.IfNot;
-                                            }
-                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot)
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.If;
-                                            }
 
-                                            //invert greater to less and vice versa
-                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.Greater)
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.Less;
-                                            }
-                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.Less)
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.Greater;
-                                            }
 
-                                            //invert greater or equal to less or equal and vice versa
-                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.Equals)
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.NotEqual;
-                                            }
-                                            else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.NotEqual)
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = AnimatorConditionMode.Equals;
-                                            }
-                                            else
-                                            {
-                                                newTransitions[copylength].conditions[0].mode = cachedTransitions[i].conditions[j].mode;
-                                            }
-
+                                            cachedTransitions[i].conditions[j].mode = InvertMode(cachedTransitions[i].conditions[j].mode);                    
 
                                             copylength++;
                                     }
@@ -737,9 +687,29 @@ public class Copy_Tools
 
 
 
+            }
+
+            if (Selection.activeObject != null)
+                if (Selection.activeObject is AnimatorStateTransition)
+                {
 
 
 
+                    //Get all transitions with the same source and destination
+                    AnimatorStateTransition selectiontransition = Selection.activeObject as AnimatorStateTransition;
+                    transitions = GetTransitions(controller, GetSourceState(controller, selectiontransition), selectiontransition.destinationState);
+
+
+                    //transitionlist to array
+
+                    if (cachedTransitions != null)
+                    {
+
+                        
+
+
+                    }
+                    else EditorGUILayout.LabelField("No Condition to Paste", EditorStyles.boldLabel);
 
 
                     //Horizontal Box for Copy,Paste,Overwrite Buttons
@@ -1267,6 +1237,26 @@ public class Copy_Tools
             reload();
         }
 
+    }
+
+
+    //invert mode method
+    private AnimatorConditionMode InvertMode(AnimatorConditionMode mode)
+    {
+        if (mode == AnimatorConditionMode.If) //bool
+            return AnimatorConditionMode.IfNot;
+        else if (mode == AnimatorConditionMode.IfNot)
+            return AnimatorConditionMode.If;
+        else if (mode == AnimatorConditionMode.Equals) //int
+            return AnimatorConditionMode.NotEqual;
+        else if (mode == AnimatorConditionMode.NotEqual)
+            return AnimatorConditionMode.Equals;
+        else if (mode == AnimatorConditionMode.Greater) //float
+            return AnimatorConditionMode.Less;
+        else if (mode == AnimatorConditionMode.Less)
+            return AnimatorConditionMode.Greater;
+   
+        return mode;
     }
 
     public void reload()
