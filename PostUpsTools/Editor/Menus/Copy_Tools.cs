@@ -83,11 +83,11 @@ public class Copy_Tools
 
                     if (cachedTransitions[i].copy)
                     {
-                        transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.16f, 0.16f, 0.16f), 2f);
+                        transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.26f, 0.26f, 0.26f), 2f);
                     }
                     else
                     {
-                        transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.26f, 0.26f, 0.26f), 2f);
+                        transitionBackground.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.16f, 0.16f, 0.16f), 2f);
                     }
 
                     GUIStyle conditionBackground = new GUIStyle(GUI.skin.box);
