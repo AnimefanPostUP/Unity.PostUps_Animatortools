@@ -44,7 +44,7 @@ The Addon is maybe Fragile, feel free to test it, but keep in mind that it could
 
 
 
-![Toggletool](https://user-images.githubusercontent.com/93488236/220157844-dc0b5df9-d14d-43ca-8112-7e6900cd235e.gif)
+![Toggletool2](https://user-images.githubusercontent.com/93488236/220158134-de209f13-bb54-4b1a-85d4-f00ad6f93a24.gif)
 ![batchconnect fan2](https://user-images.githubusercontent.com/93488236/220157899-283b5e2e-5d66-474a-be1f-1e229fc91455.gif)
 ![batchconnect strip2](https://user-images.githubusercontent.com/93488236/220157910-10a79bf7-cbc7-444b-a9db-6e174cbbb742.gif)
 ![Transitiontool2](https://user-images.githubusercontent.com/93488236/220157938-8ffb30db-dc46-49b3-a492-94c28e7f5a8f.gif)
