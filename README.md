@@ -44,11 +44,12 @@ The Addon is maybe Fragile, feel free to test it, but keep in mind that it could
 
 
 
-![Toggletool](https://user-images.githubusercontent.com/93488236/219905831-5e3f1d23-7fbe-4797-81aa-68c45b08acac.gif)
-![Batchfan](https://user-images.githubusercontent.com/93488236/219905899-a3afbe25-548f-4605-a2fa-6bee4119d5af.gif)
-![Batchstrip](https://user-images.githubusercontent.com/93488236/219905904-3db15bb5-5f18-4100-aa27-eae5a1083f31.gif)
-![Transitiontool](https://user-images.githubusercontent.com/93488236/219905838-c059e404-a1bc-4b60-a222-21e915c36765.gif)
-![Copytool](https://user-images.githubusercontent.com/93488236/219905847-48b6781d-e72a-49fd-a9e7-9515c79bac03.gif)
+![Toggletool](https://user-images.githubusercontent.com/93488236/220157844-dc0b5df9-d14d-43ca-8112-7e6900cd235e.gif)
+![batchconnect fan2](https://user-images.githubusercontent.com/93488236/220157899-283b5e2e-5d66-474a-be1f-1e229fc91455.gif)
+![batchconnect strip2](https://user-images.githubusercontent.com/93488236/220157910-10a79bf7-cbc7-444b-a9db-6e174cbbb742.gif)
+![Transitiontool2](https://user-images.githubusercontent.com/93488236/220157938-8ffb30db-dc46-49b3-a492-94c28e7f5a8f.gif)
+![Copytool in General2](https://user-images.githubusercontent.com/93488236/220157987-b98d61a1-dfc8-4f56-9d01-af3e00d1fbe6.gif)
+
 
 Planned UI Draft (Left) + Current State (Right):
 
