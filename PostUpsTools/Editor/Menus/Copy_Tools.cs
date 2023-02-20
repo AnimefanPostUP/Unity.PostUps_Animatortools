@@ -969,6 +969,7 @@ public class Copy_Tools
 
                         EditorGUILayout.LabelField("Select States to Batchconnect (Placeholder)", EditorStyles.boldLabel, GUILayout.Width(Screen.width / 1.5f));
                         EditorGUILayout.EndVertical();
+                        EditorGUILayout.EndVertical();
                     }
 
 
