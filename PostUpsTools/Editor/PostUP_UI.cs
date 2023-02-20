@@ -21,6 +21,8 @@ using static Parser_Functions;
 using static Save_Functions;
 using static AbsoluteAnimations;
 
+using static Boxdrawer;
+
 //TODO
 //Animator Functions
 //Preset Settings
@@ -127,6 +129,10 @@ public class PostUP_UI : EditorWindow
     private void OnGUI()
     {
 
+
+        GUIStyle background = new GUIStyle(GUI.skin.box);
+        background.normal.background = MakeRoundRectangle((int)100, (int)100, new Color(0.19f, 0.19f, 0.19f), 2f);
+
         //UI Refresher ----------------------------------------------------------------------------------------------------------------------------
 
         // generate a random int von 0 to 100000
@@ -144,11 +150,14 @@ public class PostUP_UI : EditorWindow
         GUILayout.BeginVertical();
         GUILayout.Space(10);
         GUILayout.BeginHorizontal();
-        GUILayout.Space(horizontalMargin); 
-        Rect scrollViewRect = GUILayoutUtility.GetRect( 0 , 1000);
+        GUILayout.Space(horizontalMargin);
+        Rect scrollViewRect = GUILayoutUtility.GetRect(0, 1000);
         scrollViewRect.height = Screen.height - scrollViewRect.y - 40;
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
- 
+
+
+        //Horizontal Layout
+        GUILayout.BeginHorizontal(background);
 
         if (GUILayout.Button("Reset UI"))
         {
@@ -164,6 +173,8 @@ public class PostUP_UI : EditorWindow
             runFluidServices = !runFluidServices;
         }
 
+        //end
+        GUILayout.EndHorizontal();
 
 
         //Update controller if New Controller is selected
@@ -224,22 +235,30 @@ public class PostUP_UI : EditorWindow
         }
         else
         {
+
+
+             GUILayout.BeginVertical(background);
+            GUILayout.Space(10);
+
             //Check for Custom Name Checkbox and show Textfield
             customName = EditorGUILayout.Toggle("Custom Filename_OPT", customName);
             if (customName) animationName = EditorGUILayout.TextField("Animation Name:", animationName);
 
             //Set Gameobjet for Controller
-            controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Controller Object / AV:", controllergameobject_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width*0.75f));
+            controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Controller Object / AV:", controllergameobject_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width * 0.75f));
 
             //Check if Controller Exists and show Options
             if (controllergameobject == null)
             {
                 EditorGUILayout.LabelField("Select a Object for the Controller for Showing Options (A Controller will be created called Generator in PostUpsTools Folder)");
+                GUILayout.Space(10);
+                GUILayout.EndVertical();
             }
             else if (animator == null)
             {
                 EditorGUILayout.LabelField("No Animator on the Controller!");
-
+                GUILayout.Space(10);
+                GUILayout.EndVertical();
             }
             else
             {
@@ -247,7 +266,9 @@ public class PostUP_UI : EditorWindow
 
 
                 //Set Target Object
-                target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width*0.75f));
+                target_buffer = (GameObject)EditorGUILayout.ObjectField("Target Object:", target_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width * 0.75f));
+                GUILayout.Space(10);
+                GUILayout.EndVertical();
 
                 //if Target is not the same as the last frame, set it to the new one
                 if (target_buffer != target)
@@ -275,21 +296,51 @@ public class PostUP_UI : EditorWindow
                     GUILayout.Space(20);
                     EditorGUILayout.LabelField("Animation Tools:", EditorStyles.boldLabel);
                     if (!customName) animationName = target.name;
+
+                    GUILayout.Space(10);
+
+                    GUILayout.BeginVertical(background);
                     quickAnimations.Menu(animationName, target, animator, controller, usepath, scenepath);
+                    GUILayout.EndVertical();
+
+                    GUILayout.Space(10);
+
+                    GUILayout.BeginVertical(background);
                     generator.GenerateSelected(animationName, target, animator, controller, usepath, scenepath);
+                    GUILayout.EndVertical();
+
                     GUILayout.Space(20);
                 }
 
                 EditorGUILayout.LabelField("Animator Utils:", EditorStyles.boldLabel);
 
+                GUILayout.Space(10);
+
+                GUILayout.BeginVertical(background);
                 animator_Utils.Menu(controller);
+                GUILayout.EndVertical();
+
+                GUILayout.Space(10);
+
+                GUILayout.BeginVertical(background);
                 parser_Menu.Menu(controller);
+                GUILayout.EndVertical();
+
+                GUILayout.Space(10);
 
             }
 
-            copy_Tools.Menu(controller);
 
+            
+            GUILayout.BeginVertical(background);
+            copy_Tools.Menu(controller);
+            GUILayout.EndVertical();
+
+            GUILayout.Space(10);
+
+            GUILayout.BeginVertical(background);
             animatorInspector.Menu(controller);
+            GUILayout.EndVertical();
         }
 
 
