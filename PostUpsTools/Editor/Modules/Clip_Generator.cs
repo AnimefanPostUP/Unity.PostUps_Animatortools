@@ -40,8 +40,8 @@ public class Clip_Generator
         AnimatorState state_off = newLayer.stateMachine.AddState("clip_off");
         state_off.motion = clip_off;
 
-        AnimatorStateTransition transition1 = CreateTransition(state_on, state_off, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
-        AnimatorStateTransition transition2 = CreateTransition(state_off, state_on, parameterName, 0f, AnimatorConditionMode.IfNot, 0f, 0f, false, false, 1f);
+        AnimatorStateTransition transition1 = CreateTransition(state_on, state_off,controller, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
+        AnimatorStateTransition transition2 = CreateTransition(state_off, state_on,controller, parameterName, 0f, AnimatorConditionMode.IfNot, 0f, 0f, false, false, 1f);
 
         AssetDatabase.AddObjectToAsset(transition1, controller);
         AssetDatabase.AddObjectToAsset(transition2, controller);

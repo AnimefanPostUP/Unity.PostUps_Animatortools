@@ -378,7 +378,7 @@ public class PostUP_UI : EditorWindow
 
 
             GUILayout.BeginVertical(background);
-            copy_Tools.Menu(controller);
+            copy_Tools.Menu(controller, animator);
             GUILayout.EndVertical();
 
             GUILayout.Space(10);

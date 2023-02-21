@@ -114,7 +114,7 @@ public class Animator_Utils
                     if (batchconnectfan && lastesstate != selectionstate && selectionstate != lastesfanstate && lastesstate != null)
                     {
                         //find first Parameter
-                        CreateEmptyTransition(lastesstate, selectionstate, 0f, 0f, false, false, 0.01f);
+                        CreateEmptyTransition(lastesstate, selectionstate, controller, 0f, 0f, false, false, 0.01f);
                         lastesfanstate = selectionstate;
 
                         //tempState = AddTemptstateByState(controller, lastesstate);
@@ -124,7 +124,7 @@ public class Animator_Utils
                     if (batchconnectstrip && lastesstate != selectionstate && selectionstate != lastesfanstate && lastesstate != null)
                     {
                         //find first Parameter
-                        CreateEmptyTransition(lastesstate, selectionstate, 0f, 0f, true, false, 0.01f);
+                        CreateEmptyTransition(lastesstate, selectionstate, controller, 0f, 0f, true, false, 0.01f);
                         lastesstate = selectionstate;
                         lastesfanstate = selectionstate;
 

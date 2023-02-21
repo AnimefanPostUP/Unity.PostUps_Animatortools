@@ -94,6 +94,9 @@ public class Transition_Functions : MonoBehaviour
         newTransition.mute = originalTransition.mute;
         newTransition.solo = originalTransition.solo;
         newTransition.canTransitionToSelf = originalTransition.canTransitionToSelf;
+
+        AssetDatabase.AddObjectToAsset(newTransition, controller); //AnimatorController controller
+
         return newTransition;
     }
 
@@ -111,8 +114,10 @@ public class Transition_Functions : MonoBehaviour
         newTransition.mute = originalTransition.mute;
         newTransition.solo = originalTransition.solo;
         newTransition.canTransitionToSelf = originalTransition.canTransitionToSelf;
- 
-        
+
+        AssetDatabase.AddObjectToAsset(newTransition, controller); //AnimatorController controller
+
+
 
         return newTransition;
     }
@@ -136,10 +141,13 @@ public class Transition_Functions : MonoBehaviour
         newTransition.mute = originalTransition.mute;
         newTransition.solo = originalTransition.solo;
         newTransition.canTransitionToSelf = originalTransition.canTransitionToSelf;
+
+        AssetDatabase.AddObjectToAsset(newTransition, controller); //AnimatorController controller
+
         return newTransition;
     }
 
-    public static AnimatorStateTransition CreateTransition(AnimatorState sourceState, AnimatorState destinationState, string parameter, float threshold, AnimatorConditionMode conditionType, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+    public static AnimatorStateTransition CreateTransition(AnimatorState sourceState, AnimatorState destinationState,AnimatorController controller, string parameter, float threshold, AnimatorConditionMode conditionType, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
     {
         AnimatorStateTransition transition = new AnimatorStateTransition();
 
@@ -152,10 +160,12 @@ public class Transition_Functions : MonoBehaviour
         transition.exitTime = exitTime;
         sourceState.AddTransition(transition);
 
+        AssetDatabase.AddObjectToAsset(transition, controller); //AnimatorController controller
+
         return transition;
     }
 
-        public static AnimatorStateTransition CreateEmptyTransition(AnimatorState sourceState, AnimatorState destinationState, float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
+    public static AnimatorStateTransition CreateEmptyTransition(AnimatorState sourceState, AnimatorState destinationState, AnimatorController controller,  float duration, float offset, bool isExit, bool hasExitTime, float exitTime)
     {
         AnimatorStateTransition transition = new AnimatorStateTransition();
 
@@ -166,6 +176,8 @@ public class Transition_Functions : MonoBehaviour
         transition.offset = offset;
         transition.exitTime = exitTime;
         sourceState.AddTransition(transition);
+
+        AssetDatabase.AddObjectToAsset(transition, controller); //AnimatorController controller
 
         return transition;
     }
@@ -197,18 +209,18 @@ public class Transition_Functions : MonoBehaviour
     public static AnimatorStateTransition ChangeTransitionSource(AnimatorStateTransition transition, AnimatorState newsource, AnimatorController controller)
     {
         AnimatorState parent = GetParentState(controller, transition);
-        AnimatorStateTransition newtransition=AddDuplicateOn(transition, newsource , transition.destinationState , controller);
+        AnimatorStateTransition newtransition = AddDuplicateOn(transition, newsource, transition.destinationState, controller);
         parent.RemoveTransition(transition);
 
         return newtransition;
 
     }
 
-    
+
     public static AnimatorStateTransition SwapDestinationSource(AnimatorStateTransition transition, AnimatorController controller)
     {
         AnimatorState parent = GetParentState(controller, transition);
-        AnimatorStateTransition newtransition=AddDuplicateOn(transition , transition.destinationState , parent, controller);
+        AnimatorStateTransition newtransition = AddDuplicateOn(transition, transition.destinationState, parent, controller);
         parent.RemoveTransition(transition);
 
         return newtransition;

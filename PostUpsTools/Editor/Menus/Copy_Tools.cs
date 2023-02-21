@@ -60,7 +60,7 @@ public class Copy_Tools
     //Array of operators
 
 
-    public void Menu(AnimatorController controller)
+    public void Menu(AnimatorController controller, Animator animator)
     {
         //if (GUILayout.Button("MENU Transition Copytool")) copytool = !copytool;
         copytool = EditorGUILayout.Foldout(copytool, "Copytool");
@@ -317,17 +317,18 @@ public class Copy_Tools
                                 else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot && cachedTransitions[i].conditions[j].iteratorvaluebool)
                                 {
                                     EditorGUILayout.LabelField("true", GUILayout.Width(1 * Screen.width / 16f));
-                                } 
-                                else if(cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If )
+                                }
+                                else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.If)
                                 {
                                     EditorGUILayout.LabelField("true", GUILayout.Width(1 * Screen.width / 16f));
-                                }else if(cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot )
+                                }
+                                else if (cachedTransitions[i].conditions[j].mode == AnimatorConditionMode.IfNot)
                                 {
                                     EditorGUILayout.LabelField("false", GUILayout.Width(1 * Screen.width / 16f));
                                 }
 
                                 //label with tempmode string
-                                
+
                             }
 
 
@@ -347,7 +348,7 @@ public class Copy_Tools
                             options = new string[4] { "Equals", "NotEqual", "Greater", "Less" };
                             selectedIndex = EditorGUILayout.Popup("", selectedIndex, options, GUILayout.Width(2 * Screen.width / 10f));
 
-                          
+
                         }
                         else //Error
                         {
@@ -382,7 +383,7 @@ public class Copy_Tools
                             string thresholdstring = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].threshold.ToString(), GUILayout.Width(2 * Screen.width / 18f));
                             cachedTransitions[i].conditions[j].setFloatTresholdByString(thresholdstring);
 
-                               if (batchconnectfan || batchconnectstrip)
+                            if (batchconnectfan || batchconnectstrip)
                             {
                                 if (cachedTransitions[i].conditions[j].iteratorvaluefloat >= 0)
                                 {
@@ -392,7 +393,7 @@ public class Copy_Tools
                                 {
                                     EditorGUILayout.LabelField("" + cachedTransitions[i].conditions[j].iteratorvaluefloat.ToString(), GUILayout.Width(1 * Screen.width / 16f));
                                 }
-                            }   
+                            }
 
 
                         }
@@ -402,7 +403,7 @@ public class Copy_Tools
                             string thresholdstring = EditorGUILayout.TextField("", cachedTransitions[i].conditions[j].threshold.ToString(), GUILayout.Width(2 * Screen.width / 18f));
                             cachedTransitions[i].conditions[j].setIntTresholdByString(thresholdstring);
 
-                              if (batchconnectfan || batchconnectstrip)
+                            if (batchconnectfan || batchconnectstrip)
                             {
                                 //label with iteravalue
                                 if (cachedTransitions[i].conditions[j].iteratorvalue >= 0)
@@ -876,6 +877,7 @@ public class Copy_Tools
                                         AnimatorStateTransition newtransition = CreateEmptyTransition(
                                         source,
                                         desti,
+                                        controller,
                                         cachedTransitions[i].duration,
                                         cachedTransitions[i].offset,
                                         cachedTransitions[i].isExit,
@@ -970,6 +972,7 @@ public class Copy_Tools
                                     AnimatorStateTransition newtransition = CreateEmptyTransition(
                                     source,
                                      desti,
+                                     controller,
                                      cachedTransitions[i].duration,
                                      cachedTransitions[i].offset,
                                      cachedTransitions[i].isExit,
@@ -1098,6 +1101,9 @@ public class Copy_Tools
 
                     if (GUILayout.Button("Cancel Batchconnect"))
                     {
+
+
+
                         batchconnectfan = false;
                         batchconnectstrip = false;
                         lastesstate = null;
@@ -1112,6 +1118,14 @@ public class Copy_Tools
                                 cachedTransitions[i].conditions[j].resetIteratorValues();
                             }
                         }
+
+
+                        //Debug controller path
+                        Debug.Log(""+AssetDatabase.GetAssetPath(controller));
+
+                        EditorUtility.SetDirty(controller);
+                        EditorUtility.SetDirty(animator);
+                        AssetDatabase.SaveAssets();
 
                     }
 
@@ -1133,6 +1147,7 @@ public class Copy_Tools
                                     newtransition = CreateEmptyTransition(
                                         selectionstate,
                                         lastesstate,
+                                        controller,
                                         cachedTransitions[i].duration,
                                         cachedTransitions[i].offset,
                                         cachedTransitions[i].isExit,
@@ -1145,6 +1160,7 @@ public class Copy_Tools
                                     newtransition = CreateEmptyTransition(
                                         lastesstate,
                                         selectionstate,
+                                        controller,
                                         cachedTransitions[i].duration,
                                         cachedTransitions[i].offset,
                                         cachedTransitions[i].isExit,
@@ -1236,6 +1252,7 @@ public class Copy_Tools
                                     newtransition = CreateEmptyTransition(
                                         selectionstate,
                                         lastesstate,
+                                        controller,
                                         cachedTransitions[i].duration,
                                         cachedTransitions[i].offset,
                                         cachedTransitions[i].isExit,
@@ -1248,6 +1265,7 @@ public class Copy_Tools
                                     newtransition = CreateEmptyTransition(
                                         lastesstate,
                                         selectionstate,
+                                        controller,
                                         cachedTransitions[i].duration,
                                         cachedTransitions[i].offset,
                                         cachedTransitions[i].isExit,
@@ -1323,23 +1341,9 @@ public class Copy_Tools
                         AssetDatabase.Refresh();
 
 
-
                     }
-
-
-
                 }
             }
-
-
-
-
-
-
-
-
-
-
 
 
 
