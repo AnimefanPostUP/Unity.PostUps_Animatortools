@@ -56,6 +56,14 @@ Batchconnect Strip Preview:
 Transition Tool Preview:
 ![Transitiontool2](https://user-images.githubusercontent.com/93488236/220157938-8ffb30db-dc46-49b3-a492-94c28e7f5a8f.gif)
 
+Batchconnect Net Preview:
+![batchconnect net](https://user-images.githubusercontent.com/93488236/220778089-ecc331ea-223c-45b0-b2e0-cc39c802b0c6.gif)
+
+
+Batchconnect Matrix Preview:
+![batchconnectmatrix](https://user-images.githubusercontent.com/93488236/220778098-0c26f281-ca93-4e03-9ff4-2e503fa9ae65.gif)
+
+
 Copy for Transition with one Parameter Change Preview:
 ![Copytool Single Param](https://user-images.githubusercontent.com/93488236/220160256-fef99f65-945c-43cf-acb4-67d7d79605b2.gif)
 
@@ -66,6 +74,3 @@ Copy for another Use:
 ![Copytool Copy Transitions3](https://user-images.githubusercontent.com/93488236/220160284-272e624b-7886-46ef-bd07-2dd9017e2fe1.gif)
 
 
-Planned UI Draft (Left) + Current State (Right):
-
-![image (1)](https://user-images.githubusercontent.com/93488236/219712399-c7f26b39-8079-43fc-b58b-effd4a22cdd2.png)
