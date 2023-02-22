@@ -74,6 +74,3 @@ Copy for another Use:
 ![Copytool Copy Transitions3](https://user-images.githubusercontent.com/93488236/220160284-272e624b-7886-46ef-bd07-2dd9017e2fe1.gif)
 
 
-Planned UI Draft (Left) + Current State (Right):
-
-![image (1)](https://user-images.githubusercontent.com/93488236/219712399-c7f26b39-8079-43fc-b58b-effd4a22cdd2.png)
