@@ -154,7 +154,6 @@ public class ToolCondition
 
     public void setFloatTresholdByString(string threshold)
     {
-
         float newThreshold = 0.0f;
         threshold = threshold.Replace('.', ',');
 
@@ -180,7 +179,51 @@ public class ToolCondition
         this.threshold = newThreshold;
     }
 
-    public void resetIteratorValues(){
+    public void iterateValues(AnimatorControllerParameterType type)
+    {
+
+        if (type == AnimatorControllerParameterType.Float)
+        {
+            iteratorvaluefloat += iteratorfloat;
+        }
+        else if (type == AnimatorControllerParameterType.Int)
+        {
+            iteratorvalue += iterator;
+        }
+        else if (type == AnimatorControllerParameterType.Bool)
+        {
+            iteratorvaluebool = !iteratorvaluebool;
+        }
+
+    }
+
+    public void resetPropertiesByType(AnimatorControllerParameterType type)
+    {
+    
+            if (type == AnimatorControllerParameterType.Bool)
+            {
+                mode = AnimatorConditionMode.If;
+                threshold = 22;
+            }
+            else if (type == AnimatorControllerParameterType.Float)
+            {
+                mode = AnimatorConditionMode.Greater;
+                threshold = 0.0f;
+            }
+            else if (type == AnimatorControllerParameterType.Int)
+            {
+                mode = AnimatorConditionMode.Equals;
+                threshold = 0;
+            }
+            else if (type == AnimatorControllerParameterType.Trigger)
+            {
+                mode = AnimatorConditionMode.If;
+                threshold = 0;
+            }
+    }
+
+    public void resetIteratorValues()
+    {
         iteratorvalue = 0;
         iteratorvaluefloat = 0.0f;
         iteratorvaluebool = false;
