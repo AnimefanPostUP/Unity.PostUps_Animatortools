@@ -46,7 +46,7 @@ public class Recent_Objects
 
                 GUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("Select" + gameobjects[i].name, GUILayout.Width(12 * Screen.width / 16f)))
+                if (GUILayout.Button("Select " + gameobjects[i].name, GUILayout.Width(12 * Screen.width / 16f)))
                 {
                     Selection.activeObject = gameobjects[i];
                 }

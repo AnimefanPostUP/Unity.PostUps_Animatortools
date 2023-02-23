@@ -56,7 +56,7 @@ public class Recently_Used
                 //horizontal layout
                 GUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("Select" + controllers[i].name, GUILayout.Width(12 * Screen.width / 16f)))
+                if (GUILayout.Button("Select " + controllers[i].name, GUILayout.Width(12 * Screen.width / 16f)))
                 {
                     Selection.activeObject = AssetDatabase.LoadAssetAtPath(AssetDatabase.GetAssetPath(controllers[i]), typeof(AnimatorController));
                 }
