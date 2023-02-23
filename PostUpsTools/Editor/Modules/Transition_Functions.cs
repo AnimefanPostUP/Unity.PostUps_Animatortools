@@ -103,8 +103,9 @@ public class Transition_Functions : MonoBehaviour
     public static AnimatorStateTransition AddDuplicateOn(AnimatorStateTransition originalTransition, AnimatorState source, AnimatorState destination, AnimatorController controller)
     {
 
-        AnimatorStateTransition newTransition = source.AddTransition(destination);
+        AnimatorStateTransition newTransition = new AnimatorStateTransition();
 
+        newTransition.destinationState = destination;
         newTransition.duration = originalTransition.duration;
         newTransition.offset = originalTransition.offset;
         newTransition.exitTime = originalTransition.exitTime;
@@ -114,6 +115,7 @@ public class Transition_Functions : MonoBehaviour
         newTransition.mute = originalTransition.mute;
         newTransition.solo = originalTransition.solo;
         newTransition.canTransitionToSelf = originalTransition.canTransitionToSelf;
+        source.AddTransition(newTransition);
 
         AssetDatabase.AddObjectToAsset(newTransition, controller); //AnimatorController controller
 
@@ -131,7 +133,9 @@ public class Transition_Functions : MonoBehaviour
         AnimatorState source = originalTransition.destinationState;
         AnimatorState parent = GetParentState(controller, originalTransition);
 
-        AnimatorStateTransition newTransition = source.AddTransition(parent);
+        AnimatorStateTransition newTransition = new AnimatorStateTransition();
+
+        newTransition.destinationState = parent;
         newTransition.duration = originalTransition.duration;
         newTransition.offset = originalTransition.offset;
         newTransition.exitTime = originalTransition.exitTime;
@@ -141,7 +145,7 @@ public class Transition_Functions : MonoBehaviour
         newTransition.mute = originalTransition.mute;
         newTransition.solo = originalTransition.solo;
         newTransition.canTransitionToSelf = originalTransition.canTransitionToSelf;
-
+        source.AddTransition(newTransition);
         AssetDatabase.AddObjectToAsset(newTransition, controller); //AnimatorController controller
 
         return newTransition;
