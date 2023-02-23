@@ -3,6 +3,8 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.EditorTools;
 using Unity.EditorCoroutines.Editor;
+using UnityEditor.Graphs;
+
 
 using System;
 using System.IO;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 using static State_Functions;
 using static Clip_Generator;
@@ -84,6 +87,9 @@ public class PostUP_UI : EditorWindow
     public Copy_Tools copy_Tools;
     public Parser_Menu parser_Menu;
     public AnimatorInspector animatorInspector;
+    public Recently_Used recently_Used;
+    public Recent_Objects recent_Objects;
+
     //Basic Inputs ----------------------------------------------------------------------------------------------------------------------------
     public bool customName;
     public string usepath;
@@ -97,7 +103,6 @@ public class PostUP_UI : EditorWindow
     public AnimatorController controller;
     public Animator animator;
     public GameObject target;
-
 
 
     //UI ----------------------------------------------------------------------------------------------------------------------------
@@ -142,11 +147,16 @@ public class PostUP_UI : EditorWindow
         parser_Menu = new Parser_Menu();
 
         animatorInspector = new AnimatorInspector();
+
+        recently_Used = new Recently_Used();
+
+        recent_Objects = new Recent_Objects();
     }
 
     private void Start()
     {
         postUP_UI = ScriptableObject.CreateInstance<PostUP_UI>();
+
     }
 
     private void OnGUI()
@@ -210,13 +220,15 @@ public class PostUP_UI : EditorWindow
 
             if (animator != null)
             {
-                controller = animator.runtimeAnimatorController as AnimatorController;
-                if (controller == null) { EditorGUILayout.HelpBox("No Controller", MessageType.Warning); controllergameobject = null; controllergameobject_buffer = null; }
+                //controller = animator.runtimeAnimatorController as AnimatorController;
+
+
             }
         }
 
 
-
+        controller = GetCurrentActiveController();
+        if (controller == null) { EditorGUILayout.HelpBox("No Controller", MessageType.Warning); controllergameobject = null; controllergameobject_buffer = null; }
 
 
         //get controller filename
@@ -248,10 +260,19 @@ public class PostUP_UI : EditorWindow
         if (animatorInspector == null)
             animatorInspector = new AnimatorInspector();
 
+        if (recently_Used == null)
+            recently_Used = new Recently_Used();
+
+        if (recent_Objects == null)
+            recent_Objects = new Recent_Objects();
+
 
         //Inputs ------------------------------------------------------------------------------------------------------------------
 
         //Folder Selection
+
+
+
         usepath = folder_dialog.FolderDialogGUI();
         EditorGUILayout.LabelField("Selected Folder:" + usepath, EditorStyles.boldLabel);
         GUILayout.Space(5);
@@ -275,18 +296,11 @@ public class PostUP_UI : EditorWindow
             if (customName) animationName = EditorGUILayout.TextField("Animation Name:", animationName);
 
             //Set Gameobjet for Controller
-            controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Controller Object / AV:", controllergameobject_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width * 0.75f));
+            controllergameobject_buffer = (GameObject)EditorGUILayout.ObjectField("Animator Object / AV:", controllergameobject_buffer, typeof(GameObject), true, GUILayout.Width(Screen.width * 0.75f));
 
             //show controller path:
 
-            if (controller != null)
-            {
-                string controllerpath = AssetDatabase.GetAssetPath(controller);
-                //label with path
-                EditorGUILayout.LabelField("Selected Controller:" + controllerpath, EditorStyles.boldLabel);
-            }
             GUILayout.Space(10);
-
 
             //Check if Controller Exists and show Options
             if (controllergameobject == null)
@@ -297,13 +311,12 @@ public class PostUP_UI : EditorWindow
             }
             else if (animator == null)
             {
-                EditorGUILayout.LabelField("No Animator on the Controller!");
+                EditorGUILayout.LabelField("No Animator on the Gameobject!");
                 GUILayout.Space(10);
                 GUILayout.EndVertical();
             }
             else
             {
-
 
 
                 //Set Target Object
@@ -345,6 +358,12 @@ public class PostUP_UI : EditorWindow
                     GUILayout.Space(10);
 
                     GUILayout.BeginVertical(background);
+                    recent_Objects.Menu(controller);
+                    GUILayout.EndVertical();
+
+                    GUILayout.Space(10);
+
+                    GUILayout.BeginVertical(background);
                     quickAnimations.Menu(animationName, target, animator, controller, usepath, scenepath);
                     GUILayout.EndVertical();
 
@@ -357,25 +376,29 @@ public class PostUP_UI : EditorWindow
                     GUILayout.Space(20);
                 }
 
-                EditorGUILayout.LabelField("Animator Utils:", EditorStyles.boldLabel);
-
-                GUILayout.Space(10);
-
-                GUILayout.BeginVertical(background);
-                animator_Utils.Menu(controller);
-                GUILayout.EndVertical();
-
-                GUILayout.Space(10);
-
-                GUILayout.BeginVertical(background);
-                parser_Menu.Menu(controller);
-                GUILayout.EndVertical();
-
-                GUILayout.Space(10);
-
             }
 
 
+
+            EditorGUILayout.LabelField("Animator Utils:", EditorStyles.boldLabel);
+
+            GUILayout.BeginVertical(background);
+            recently_Used.Menu(controller);
+            GUILayout.EndVertical();
+
+            GUILayout.Space(10);
+
+            GUILayout.BeginVertical(background);
+            animator_Utils.Menu(controller);
+            GUILayout.EndVertical();
+
+            GUILayout.Space(10);
+
+            //GUILayout.BeginVertical(background);
+            //parser_Menu.Menu(controller);
+            //GUILayout.EndVertical();
+
+            //GUILayout.Space(10);
 
             GUILayout.BeginVertical(background);
             copy_Tools.Menu(controller, animator);
@@ -383,10 +406,12 @@ public class PostUP_UI : EditorWindow
 
             GUILayout.Space(10);
 
-            GUILayout.BeginVertical(background);
-            animatorInspector.Menu(controller);
-            GUILayout.EndVertical();
+            //GUILayout.BeginVertical(background);
+            //animatorInspector.Menu(controller);
+            //GUILayout.EndVertical();
         }
+
+
 
 
         //Spacer for Scrollview
@@ -405,6 +430,8 @@ public class PostUP_UI : EditorWindow
     }
 
     //Method to deselect all objects in the unity editor animator window
+
+
 
     private void ForceUpdates()
     {
@@ -445,6 +472,18 @@ public class PostUP_UI : EditorWindow
     {
         yield return new WaitForSeconds(0.5f);
         runFluidServices = true;
+    }
+
+    public AnimatorController GetCurrentActiveController()
+    {
+        string typeName = "UnityEditor.Graphs.AnimatorControllerTool, UnityEditor.Graphs";
+        Type t = Type.GetType(typeName);
+
+        //check if instance is already open 
+        EditorWindow animator = EditorWindow.GetWindow(t, false, "Animator", false);
+        BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
+        FieldInfo objectField = t.GetField("m_AnimatorController", bindingAttr);
+        return (AnimatorController)objectField.GetValue(animator);
     }
 
 
