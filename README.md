@@ -6,8 +6,7 @@
     VR Chat Animator Toolkit
     
 
-
-![Screenshot_20230220_234956](https://user-images.githubusercontent.com/93488236/220209336-a1ae9ecd-64e3-4864-bc83-4192444409e7.png)
+![Screenshot_20230223_061128](https://user-images.githubusercontent.com/93488236/220826097-502e47a6-916c-4c3e-aa73-340acc3f09a8.png)
 ![Screenshot_20230220_165721](https://user-images.githubusercontent.com/93488236/220152804-753facf6-e5d3-430d-ba27-a471a4e208ed.png)
 
 
