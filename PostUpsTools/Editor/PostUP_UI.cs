@@ -406,9 +406,9 @@ public class PostUP_UI : EditorWindow
 
             GUILayout.Space(10);
 
-            //GUILayout.BeginVertical(background);
-            //animatorInspector.Menu(controller);
-            //GUILayout.EndVertical();
+            GUILayout.BeginVertical(background);
+            animatorInspector.Menu(controller);
+            GUILayout.EndVertical();
         }
 
 

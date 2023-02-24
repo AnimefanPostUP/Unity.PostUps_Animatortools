@@ -34,271 +34,108 @@ public class AnimatorInspector
     bool copytool;
 
     //array for transitions
-    AnimatorStateTransition[] transitions;
-    ToolTransition[] cachedTransitions;
+    List<SerializedProperty> serializedTransitions = new List<SerializedProperty>();
+    AnimatorStateTransition[] selectedTransitionsarray;
+    List<AnimatorStateTransition> selectedTransitions;
 
-    //private int columns = 3;
-    //private bool deletetranstiontrigger;
-    //private int deleteindex;
     private bool pasteTrigger;
     private int pasteIndex;
-
-    //Array of operators
 
 
     public void Menu(AnimatorController controller)
     {
-        
+
         copytool = EditorGUILayout.Foldout(copytool, "Inspector (Dummy)");
 
         if (copytool)
         {
-            // Begin vertical
-            EditorGUILayout.BeginVertical();
 
-            //Experimental
-            if (cachedTransitions != null)
+            serializedTransitions.Clear();
+
+            if (Selection.activeObject is AnimatorStateTransition)
             {
-                
-                  
+                AnimatorStateTransition selectiontransition = Selection.activeObject as AnimatorStateTransition;
+                //initialise the selected transitions          
+                selectedTransitionsarray = GetTransitions(controller, GetSourceState(controller, selectiontransition), selectiontransition.destinationState);
+
+                selectedTransitions = new List<AnimatorStateTransition>(selectedTransitionsarray);
+
+                SerializedObject serializedController = new SerializedObject(controller);
+
+                foreach (AnimatorState state in controller.layers.SelectMany(layer => layer.stateMachine.states).Select(state => state.state))
+                {
+                    // Iterate over each transition in the state
+                    foreach (AnimatorStateTransition transition in state.transitions)
+                    {
+                        // Check if the transition is in the selectedTransitions list
+                        if (selectedTransitions.Contains(transition))
+                        {
+                            // Get the SerializedObject for the AnimatorStateTransition
+                            SerializedObject transitionSerializedObject = new SerializedObject(transition);
+
+                            // Add the SerializedObject to the list of serialized transitions
+                            serializedTransitions.Add(transitionSerializedObject.FindProperty("m_Solo"));
+                            serializedTransitions.Add(transitionSerializedObject.FindProperty("m_Mute"));
+                            // Display the transition in the inspector
+                            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_Solo"), false);
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_Mute"), false);
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_HasExitTime"), new GUIContent("Has Exit Time"));
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_ExitTime"), true);
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_HasFixedDuration"), true);
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_TransitionDuration"), new GUIContent("Duration"));
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_TransitionOffset"), new GUIContent("Offset"));
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_InterruptionSource"), new GUIContent("Interruption Source"));
+                            EditorGUILayout.PropertyField(transitionSerializedObject.FindProperty("m_OrderedInterruption"), new GUIContent("Ordered Interruption"));
+
+                            EditorGUILayout.EndVertical();
+                            transitionSerializedObject.ApplyModifiedProperties();
 
 
+                            // Add SerializedProperties for the conditions
+                            SerializedProperty conditions = transitionSerializedObject.FindProperty("m_Conditions");
+                            for (int i = 0; i < conditions.arraySize; i++)
+                            {
+
+                                SerializedProperty condition = conditions.GetArrayElementAtIndex(i);
+
+                                if (conditions != null && conditions.arraySize > 0 && condition != null)
+                                {
+
+                                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+                                    //Property Fields for the conditions
+                                    EditorGUILayout.PropertyField(condition.FindPropertyRelative("m_ConditionMode"), new GUIContent("Condition Mode"));
+                                    EditorGUILayout.PropertyField(condition.FindPropertyRelative("m_ConditionEvent"), new GUIContent("Event"));
+                                    EditorGUILayout.PropertyField(condition.FindPropertyRelative("m_EventTreshold"), new GUIContent("Threshhold"));
+
+                                    EditorGUILayout.EndVertical();
+
+                                }
+
+                            }
+
+                            transitionSerializedObject.ApplyModifiedProperties();
+
+
+
+
+                        }
+
+                    }
+
+                }
 
             }
 
 
-            GUILayout.Space(30);
-            if (Selection.activeObject != null)
-                if (Selection.activeObject is AnimatorStateTransition)
-                {
 
-
-
-                    //Get all transitions with the same source and destination
-                    AnimatorStateTransition selectiontransition = Selection.activeObject as AnimatorStateTransition;
-                    transitions = GetTransitions(controller, GetSourceState(controller, selectiontransition), selectiontransition.destinationState);
-
-                    //get name of sourcestate
-                    string sourcename = GetSourceState(controller, selectiontransition).name;
-                    string destiname = selectiontransition.destinationState.name;
-
-                    //transitionlist to array
-
-                    if (cachedTransitions != null)
-                    {
-
-
-                    }
-                    else EditorGUILayout.LabelField("No Condition to Paste", EditorStyles.boldLabel);
-
-
-                    if (GUILayout.Button("Copy All Transitions", GUILayout.Width(Screen.width)))
-                    {
-                        //initiate transition array
-                        cachedTransitions = new ToolTransition[transitions.Length];
-
-
-                        for (int i = 0; i < transitions.Length; i++)
-                        {
-
-                            //Debug transition name
-                            //Debug.Log("Transition " + i + " copied");
-
-                            cachedTransitions[i] = new ToolTransition(true);
-
-                            //initiate ToolCondition array
-                            cachedTransitions[i].conditions = new ToolCondition[transitions[i].conditions.Length];
-
-                            for (int j = 0; j < transitions[i].conditions.Length; j++)
-                            {
-
-                                //Debug condition parameter, mode and threshold
-                                //Debug.Log(transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
-                                cachedTransitions[i].conditions[j] = new ToolCondition(transitions[i].conditions[j].parameter, transitions[i].conditions[j].mode, transitions[i].conditions[j].threshold);
-                            }
-                        }
-
-                    }
-
-
-
-                    /*
-                    //show conditions of transition array 
-                    EditorGUILayout.LabelField("Current Transitions of Selection:", EditorStyles.boldLabel);
-                    for (int i = 0; i < transitions.Length; i++)
-                    {
-                        EditorGUILayout.LabelField("Transition " + i);
-                        for (int j = 0; j < transitions[i].conditions.Length; j++)
-                        {
-                            //read out array
-                            EditorGUILayout.LabelField(transitions[i].conditions[j].parameter + " " + transitions[i].conditions[j].mode + " " + transitions[i].conditions[j].threshold);
-                        }
-                    }
-                    */
-
-                    if (Selection.activeObject is AnimatorStateTransition && cachedTransitions != null)
-                    {
-
-                        bool checkanycopy = false;
-                        if (cachedTransitions != null && cachedTransitions.Length > 0)
-                            if (cachedTransitions != null)
-                            {
-                                for (int i = 0; i < cachedTransitions.Length; i++)
-                                {
-                                    if (cachedTransitions[i].copy)
-                                    {
-                                        checkanycopy = true;
-                                    }
-                                }
-                            }
-
-                        if (checkanycopy == false) EditorGUILayout.LabelField("No Transitions Selected", EditorStyles.boldLabel);
-
-
-
-
-                        if (cachedTransitions != null && cachedTransitions.Length > 0)
-                            if (checkanycopy && GUILayout.Button("Paste Selected Transitions", GUILayout.Width(Screen.width)))
-                            {
-
-
-
-                                AnimatorState source = GetSourceState(controller, selectiontransition);
-                                AnimatorState desti = selectiontransition.destinationState;
-
-
-                                //iterate through all cachedtransitions
-                                for (int i = 0; i < cachedTransitions.Length; i++)
-                                {
-                                    if (cachedTransitions[i].copy)
-                                    {
-
-
-                                        //create new transition object
-                                        AnimatorStateTransition newtransition = source.AddTransition(desti);
-
-                                        //iterate through all cachedconditions
-                                        for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
-                                        {
-                                            //add condition to transition object
-                                            newtransition.AddCondition(cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold, cachedTransitions[i].conditions[j].parameter);
-                                            //add transtion to controller
-                                        }
-                                    }
-                                }
-
-                                EditorUtility.SetDirty(controller);
-                                AssetDatabase.SaveAssets();
-                                AssetDatabase.Refresh();
-
-                            }
-
-
-
-                        if (cachedTransitions != null && cachedTransitions.Length > 0)
-                            if (checkanycopy && GUILayout.Button("Overwrite All Transitions (Reload!)", GUILayout.Width(Screen.width)))
-                            {
-
-
-                                AnimatorState source = GetSourceState(controller, selectiontransition);
-                                AnimatorState desti = selectiontransition.destinationState;
-
-
-                                DeleteTransitions(controller, source, desti);
-
-                                //iterate through all cachedtransitions
-                                for (int i = 0; i < cachedTransitions.Length; i++)
-                                {
-                                    if (cachedTransitions[i].copy)
-                                    {
-
-
-                                        //create new transition object
-                                        AnimatorStateTransition newtransition = source.AddTransition(desti);
-
-                                        //iterate through all cachedconditions
-                                        for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
-                                        {
-                                            //add condition to transition object
-                                            newtransition.AddCondition(cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold, cachedTransitions[i].conditions[j].parameter);
-                                        }
-                                    }
-                                }
-
-                                //save changes
-                                EditorUtility.SetDirty(controller);
-                                AssetDatabase.SaveAssets();
-                                AssetDatabase.Refresh();
-
-
-                            }
-
-
-
-                        if (pasteTrigger)
-                        {
-                            pasteTrigger = false;
-
-                            AnimatorState source = GetSourceState(controller, selectiontransition);
-                            AnimatorState desti = selectiontransition.destinationState;
-
-
-                            //iterate through all cachedtransitions
-                            for (int i = 0; i < cachedTransitions.Length; i++)
-                            {
-                                if (i == pasteIndex)
-                                {
-
-
-                                    //create new transition object
-                                    AnimatorStateTransition newtransition = source.AddTransition(desti);
-
-                                    //iterate through all cachedconditions
-                                    for (int j = 0; j < cachedTransitions[i].conditions.Length; j++)
-                                    {
-                                        //add condition to transition object
-
-                                        newtransition.AddCondition(cachedTransitions[i].conditions[j].mode, cachedTransitions[i].conditions[j].threshold, cachedTransitions[i].conditions[j].parameter);
-                                        //add transtion to controller
-                                    }
-                                }
-                            }
-
-                            EditorUtility.SetDirty(controller);
-                            AssetDatabase.SaveAssets();
-                            AssetDatabase.Refresh();
-
-
-
-
-                        }
-                    }
-                }
-
-            //end vertical
-            EditorGUILayout.EndVertical();
         }
-        else
-        {
-
-            reload();
-        }
-
     }
 
     public void reload()
     {
-        //reset cache
-        cachedTransitions = null;
 
-        //reset transition array
-        transitions = null;
-
-        //reset paste trigger
-        pasteTrigger = false;
-
-        //reset paste index
-        pasteIndex = 0;
     }
 
 
