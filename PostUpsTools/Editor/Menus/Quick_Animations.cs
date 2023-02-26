@@ -39,19 +39,16 @@ public class Quick_Animations
 
             if (GUILayout.Button("Create Toggle Animations"))
             {
-                controller = LoadController();
                 GenerateToggles(animationName, target, animator, controller, usepath, scenepath);
             }
 
             if (GUILayout.Button("Create Linear Audio Volume"))
             {
-                controller = LoadController();
                 GenerateLinearAudio(animationName, target, animator, controller, usepath, scenepath);
             }
 
             if (GUILayout.Button("Create Hue Curve (Color+Emission)"))
             {
-                controller = LoadController();
                 GenerateHueCurve(animationName, target, animator, controller, usepath, scenepath);
             }
         }

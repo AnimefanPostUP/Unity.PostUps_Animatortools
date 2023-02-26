@@ -40,11 +40,28 @@ public class Clip_Generator
         AnimatorState state_off = newLayer.stateMachine.AddState("clip_off");
         state_off.motion = clip_off;
 
-        AnimatorStateTransition transition1 = CreateTransition(state_on, state_off,controller, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
-        AnimatorStateTransition transition2 = CreateTransition(state_off, state_on,controller, parameterName, 0f, AnimatorConditionMode.IfNot, 0f, 0f, false, false, 1f);
+        AnimatorStateTransition transition1 = CreateTransition(state_on, state_off, controller, parameterName, 0f, AnimatorConditionMode.If, 0f, 0f, false, false, 1f);
+        AnimatorStateTransition transition2 = CreateTransition(state_off, state_on, controller, parameterName, 0f, AnimatorConditionMode.IfNot, 0f, 0f, false, false, 1f);
 
-        AssetDatabase.AddObjectToAsset(transition1, controller);
-        AssetDatabase.AddObjectToAsset(transition2, controller);
+        //check if asset already exists
+        if (AssetDatabase.Contains(transition1))
+        {
+        }
+        else
+        {
+            AssetDatabase.AddObjectToAsset(transition1, controller);
+        }
+
+        if (AssetDatabase.Contains(transition2))
+        {
+        }
+        else
+        {
+            AssetDatabase.AddObjectToAsset(transition2, controller);
+        }
+
+
+
 
         EditorUtility.SetDirty(clip_on);
         EditorUtility.SetDirty(clip_off);

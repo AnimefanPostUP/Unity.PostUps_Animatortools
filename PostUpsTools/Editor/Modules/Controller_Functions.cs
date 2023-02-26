@@ -15,18 +15,6 @@ using System.Text.RegularExpressions;
 public class Controller_Functions
 {
     // Start is called before the first frame update
-    public static AnimatorController LoadController()
-    {
-        string controllerPath = "Assets/PostUpsTools/Generator.controller";
-        AnimatorController existingController = AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath);
-        if (existingController == null)
-        {
-            return AnimatorController.CreateAnimatorControllerAtPath(controllerPath);
-        }
-        else
-        {
-            return existingController;
-        }
-    }
+
 
 }

@@ -112,9 +112,6 @@ public class AbsoluteAnimations
             if (GUILayout.Button("Generate Selected"))
             {
                 if (!customName) animationName = target.name;
-                controller = LoadController();
-
-
 
                 switch (selectedOption)
                 {
