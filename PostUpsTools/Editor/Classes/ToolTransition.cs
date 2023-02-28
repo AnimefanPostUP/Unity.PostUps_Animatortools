@@ -190,7 +190,7 @@ public class ToolCondition
         {
             iteratorvalue += iterator;
         }
-        else if (type == AnimatorControllerParameterType.Bool)
+        else if (type == AnimatorControllerParameterType.Bool && flip)
         {
             iteratorvaluebool = !iteratorvaluebool;
         }

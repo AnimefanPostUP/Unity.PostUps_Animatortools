@@ -1478,6 +1478,7 @@ public class Copy_Tools
                         }
 
                         EditorUtility.SetDirty(controller);
+                        if(animator != null)
                         EditorUtility.SetDirty(animator);
                         AssetDatabase.SaveAssets();
 
