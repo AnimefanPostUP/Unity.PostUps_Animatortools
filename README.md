@@ -1,4 +1,4 @@
-
+DISCLAIMER!!!: the tool currently doesnt delete Subassets and may leaves trash in you animator
 
 # PostUpsTools
 
@@ -12,7 +12,7 @@
 
     
 
-DISCLAIMER!!!: the tool currently doesnt delete Subassets and may leaves trash in you animator
+
 
 I Started this Project around the 14.02~
 
