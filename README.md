@@ -1,6 +1,6 @@
 DISCLAIMER!!!: the tool currently doesnt delete Subassets and may leaves trash in you animator
 
-# PostUpsTools
+# PostUps Animator Tools 
 
     #Unity 2019.4.31f1
     VR Chat Animator Toolkit
